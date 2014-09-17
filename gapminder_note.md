@@ -24,12 +24,16 @@ What data frame? Oh, go type in `class(data)`, it will tell you that the type of
 
 Okay enough talk let's do some analysis. 
 
-#Number of countries 
-
-
+#Basic graph: Number of countries 
+From using `summary(data)` you can see that each entry has "continent" field on it. 
+![summary(data)](../images_gapminder/summary)
 
 #Life expectancy 
 
 
 ##Life expectancy and GDP per capital
 
+
+#How do I know all these stuff 
+- I listen in class (when the prof talks about thins I don't already know)
+- I learned through swirl, seriously that's the fastest way to learn so just 
