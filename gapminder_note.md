@@ -10,12 +10,13 @@ This little write-up will explore some of the built-in R functions and how they 
 
 
 
-#Getting and taking peek 
-First, put the text file you just downloaded into your current directory. To see your current directory, type 'getwd()' in your console, and set it by using setwd(directorypath). 
+#Getting and taking peek at the data
+First, put the text file you just downloaded into your desired working directory. To see your current directory, type `getwd()` in your console, and set it by using `setwd(YourDirectoryPath)`. 
 
+Load the data into the R studio console by typing `data  <- read.delim("gapminderDataFiveYear.txt")`
 
-
-There are several ways to take a look at how your data frame looks like. What's data frame? That's just the "type" of your data object. You can check it by typing in 
+There are several ways to take a look at how your data frame looks like. What's data frame? That's just the "type" of your data object. 
+- 
 'class(data)'
 
 #Number of countries 
