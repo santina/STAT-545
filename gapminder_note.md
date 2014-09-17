@@ -1,6 +1,4 @@
----
-output: html_document
----
+
 #Intro
 
 The following consists of some interesting observations obtained from 
@@ -78,8 +76,25 @@ To see the country with the highest life expectancy, let's try something differe
 Here we subsetted the dataframe to specify that we want all the row(s) with the maximum life expectancy. And unsurprisingly, Japan got it. 
 
 ##Life expectancy and GDP per capital
+Now let's create a simple scatter plot to see if there's a pattern to life expectation and GDP per capital : 
+
+`plot(lifeExp ~ gdpPercap, data)`  
+
+The plot pulls the data from __data__ and plots life expectation against GDP per capita. From the graph, you can see that life expectancy doesn't perfectly correlate with GDP per capita. There are a good number of countries with fairly high life expectancy but low GDP per capital. However, it's clear that countries with fairly high GDP per capital (those that scatter to the right side of the plot) have fairly high life expectancy. 
+
+Now just for fun let's plot a few more things: 
+
+`plot(lifeExp ~ pop, data)`
+
+Seems like there's linear correlation of life expectancy versus population for countries with popultaion greater than certain number. 
+
+
+`plot(pop ~ gdpPercap, data)`
+
+Very interesting graph.... 
 
 
 #How do I know all these stuff 
 - I listen in class (when the prof talks about thins I don't already know)
-- I learned through swirl, seriously that's the fastest way to learn so just 
+- I learned through swirl, seriously that's the fastest way to pick up R
+- Do assignments on R-programming on Coursera. 
