@@ -28,6 +28,10 @@ Okay enough talk let's do some analysis.
 
 #Basic graph: Number of countries 
 From using `summary(data)` you can see that each entry has "continent" field on it. 
+```{r}
+summary(data)
+```
+
 ![summary(data)](https://github.com/STAT545-UBC/zz_sheng-ting_lin-coursework/blob/master/images_gapminder/summary.JPG)
 
 
