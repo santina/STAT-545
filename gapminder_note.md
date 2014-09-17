@@ -64,12 +64,17 @@ There we can already see that while life expectancy is left-skewed, there are so
 
 We know from the summary that the lowest is 23.60 and the highest is 82.60
 You can quickly find out by subsetting the dataframe using the '$' sign: 
+
 `country[country$lifeExp ==23.6]` 
+
 oops nothing got returned (0 row), so let's try `country[country$lifeExp <=23.6]` ... 
-and Rwanda is returned, the life expectancy is 23.599 (You see that the number got rounded up so the first attempt didn't work). Maybe because this country has very poor living standard or child death rate is high. 
+
+and Rwanda is returned, the life expectancy is 23.599 (You see that the number got rounded up so the first attempt didn't work). Maybe because this country has very poor living standard and/or child mortility is high. 
 
 To see the country with the highest life expectancy, let's try something different : 
+
 `data[data$lifeExp == max(data$lifeExp), ]` 
+
 Here we subsetted the dataframe to specify that we want all the row(s) with the maximum life expectancy. And unsurprisingly, Japan got it. 
 
 ##Life expectancy and GDP per capital
