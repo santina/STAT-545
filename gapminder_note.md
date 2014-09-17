@@ -28,8 +28,7 @@ Okay enough talk let's do some analysis.
 
 #Basic graph: Number of countries 
 From using `summary(data)` you can see that each entry has "continent" field on it. 
-```{r}
-data  <- read.delim("gapminderDataFiveYear.txt")
+```{r data  <- read.delim("gapminderDataFiveYear.txt")}
 summary(data)
 ```
 
