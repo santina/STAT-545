@@ -14,31 +14,24 @@ output: html_document
 - multi-panel conditioning 
 - aesthetic plotting (?) 
 - to maeka  plot
-  - has to use a data.frame 
-  - aesthetic: map variables into perceivable properties : position, color, line type, etc
-  - geom: points or line? 
-  - scale
-  - stat
+  * has to use a data.frame 
+  * aesthetic: map variables into perceivable properties : position, color, line type, etc
+  * geom: points or line? 
+  * scale
+  * stat
 - in base graphics figure exists as a side effect
 - ggplot2 construct the figure as a R object 
-  - so you need to print it to see it (doesn't automatically show up)
+  * so you need to print it to see it (doesn't automatically show up)
 
 ##tidying the data 
 - tidyr::spread 
 - reshape2::cast
 - Try read the description ?read.table()
 
-##
+##R markdown
+- went through R markdown
+
+##assignmet time
+- was given time to wokr on 
 
 
-```{r}
-summary(cars)
-```
-
-You can also embed plots, for example:
-
-```{r, echo=FALSE}
-plot(cars)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
