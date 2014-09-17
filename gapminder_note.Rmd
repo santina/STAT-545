@@ -1,9 +1,4 @@
----
-title: "Gapminder exploration"
-author: "Santina"
-output: 
-  html_document
----
+
 #Intro
 
 The following consists of some interesting observations obtained from 
