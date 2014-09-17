@@ -32,6 +32,7 @@ Okay enough talk let's do some analysis.
 From using `summary(data)` you can see that each entry has "continent" field on it. 
 ![summary(data)](https://github.com/STAT545-UBC/zz_sheng-ting_lin-coursework/blob/master/images_gapminder/summary.JPG)
 
+
 As you can see, there are 12 entries for each country, so we can divide the number of countries in each continent by 12 to the actual number of countries there are (at least in this study) in each continent. 
 
 `> continents  <- c(624, 300, 396, 360, 24)`
@@ -54,9 +55,22 @@ not clear ? we can put the names of the continent on top of each number. How do 
 #Life expectancy 
 From the summary we can see that life expectancy has a large range... it's very shocking, and it probaly makes you curious to see which country has the highest or the lowest range, and if life expectancy has any correlations to other measurements.... 
 
+Let's make a bar graph (histogram) to quickly look at the life expectancy in general: 
+`hist(data$lifeExp)` 
+![lifeExp(data)](https://github.com/STAT545-UBC/zz_sheng-ting_lin-coursework/blob/master/images_gapminder/lifeExp_histo.jpeg)
+There we can already see that while life expectancy is left-skewed, there are some countries with a very low life expectancy (below 30!). Let's find out more. 
+
 ##which countries? lowest and highest life expectancy 
 
+We know from the summary that the lowest is 23.60 and the highest is 82.60
+You can quickly find out by subsetting the dataframe using the '$' sign: 
+`country[country$lifeExp ==23.6]` 
+oops nothing got returned (0 row), so let's try `country[country$lifeExp <=23.6]` ... 
+and Rwanda is returned, the life expectancy is 23.599 (You see that the number got rounded up so the first attempt didn't work). Maybe because this country has very poor living standard or child death rate is high. 
 
+To see the country with the highest life expectancy, let's try something different : 
+`data[data$lifeExp == max(data$lifeExp), ]` 
+Here we subsetted the dataframe to specify that we want all the row(s) with the maximum life expectancy. And unsurprisingly, Japan got it. 
 
 ##Life expectancy and GDP per capital
 
