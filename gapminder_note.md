@@ -10,7 +10,7 @@ Information on these five countries include categories such as GDP per capital, 
 This little write-up will explore some of the built-in R functions and how they can reveal some interesting information in this dataset. 
 
 
-#Getting and taking peek at the data
+#Getting and taking a peek at the data
 First, put the text file you just downloaded into your desired working directory. To see your current directory, type `getwd()` in your console, and set it by using `setwd(YourDirectoryPath)`. 
 
 Load the data into the R studio console by typing `data  <- read.delim("gapminderDataFiveYear.txt")`
@@ -80,21 +80,27 @@ Now let's create a simple scatter plot to see if there's a pattern to life expec
 
 `plot(lifeExp ~ gdpPercap, data)`  
 
+![life expectancy versus GDP Per Capita](https://github.com/STAT545-UBC/zz_sheng-ting_lin-coursework/blob/master/images_gapminder/lifeExp_gdpPercap.jpeg)
+
 The plot pulls the data from __data__ and plots life expectation against GDP per capita. From the graph, you can see that life expectancy doesn't perfectly correlate with GDP per capita. There are a good number of countries with fairly high life expectancy but low GDP per capital. However, it's clear that countries with fairly high GDP per capital (those that scatter to the right side of the plot) have fairly high life expectancy. 
 
 Now just for fun let's plot a few more things: 
 
 `plot(lifeExp ~ pop, data)`
 
+![life expectancy versus population](https://github.com/STAT545-UBC/zz_sheng-ting_lin-coursework/blob/master/images_gapminder/lifeExp_pop.jpeg)
+
 Seems like there's linear correlation of life expectancy versus population for countries with popultaion greater than certain number. 
 
 
 `plot(pop ~ gdpPercap, data)`
 
+![Population versus GDP per Capita](https://github.com/STAT545-UBC/zz_sheng-ting_lin-coursework/blob/master/images_gapminder/pop_gdpPercap.jpeg)
+
 Very interesting graph.... 
 
 
 #How do I know all these stuff 
-- I listen in class (when the prof talks about thins I don't already know)
-- I learned through swirl, seriously that's the fastest way to pick up R
-- Do assignments on R-programming on Coursera. 
+- I listen in [STAT545](http://stat545-ubc.github.io/index.html) ! 
+- I learned through [swirl](http://swirlstats.com/students.html), seriously that's the fastest way to pick up R
+- Do assignments on [R-programming on Coursera](https://www.coursera.org/course/rprog), check out their data science specialization, too! 
