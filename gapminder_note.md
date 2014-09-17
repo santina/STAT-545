@@ -31,14 +31,24 @@ From using `summary(data)` you can see that each entry has "continent" field on 
 
 As you can see, there are 12 entries for each country, so we can divide the number of countries in each continent by 12 to the actual number of countries there are (at least in this study) in each continent. 
 
-> continents  <- c(624, 300, 396, 360, 24)
-> continents  <-  continents/12
-> continents  
-[1] 52 25 33 30  2
+`> continents  <- c(624, 300, 396, 360, 24)`
+`> continents  <-  continents/12`
+`> continents  `
+`[1] 52 25 33 30  2`
+
+not clear ? we can put the names of the continent on top of each number. How do we do that? workflow
+1. __continents__ is right now a numeric (type `class(continents)` to check), we need to make it into a matrix 
+2. make it into a matrix by giving it dimentions: `dim(continents)  <- c(1,5)` now check its class. 
+3. create a vector for the colum names, `cnames  <-  c("Africa", "Americas", "Asia", "Europe", "Oceania")`
+4. name the column of __continents__ the cnames we just created: `colnames(continents)  <- cnames`
+5. now check `continents` . woah only 2 countries in Oceania?!  
 
 #Life expectancy 
+From the summary we can see that life expectancy has a large range... it's very shocking, and it probaly makes you curious to see which country has the highest or the lowest range, and if life expectancy has any correlations to other measurements.... 
 
 ##which countries? lowest and highest life expectancy 
+
+
 
 ##Life expectancy and GDP per capital
 
