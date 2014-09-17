@@ -1,3 +1,6 @@
+---
+output: html_document
+---
 #Intro
 
 The following consists of some interesting observations obtained from 
@@ -37,10 +40,15 @@ As you can see, there are 12 entries for each country, so we can divide the numb
 `[1] 52 25 33 30  2`
 
 not clear ? we can put the names of the continent on top of each number. How do we do that? workflow
+
 1. __continents__ is right now a numeric (type `class(continents)` to check), we need to make it into a matrix 
+
 2. make it into a matrix by giving it dimentions: `dim(continents)  <- c(1,5)` now check its class. 
+
 3. create a vector for the colum names, `cnames  <-  c("Africa", "Americas", "Asia", "Europe", "Oceania")`
+
 4. name the column of __continents__ the cnames we just created: `colnames(continents)  <- cnames`
+
 5. now check `continents` . woah only 2 countries in Oceania?!  
 
 #Life expectancy 
