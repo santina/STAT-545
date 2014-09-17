@@ -19,6 +19,7 @@ There are several ways to take a look at how your data frame looks like. What's 
 - `summary(data)` useful if you want to know the min, max, average, and all that for each column. (so fairly useful)
 - `head(data)` by default it returns the first six rows of the data, you can change it by specifying `head(data,10)` for example
 - `tail(data)` same thing with the head, except it shows the last 6 rows of the data frame. 
+- (this is not an exclusive list)
 
 What data frame? Oh, go type in `class(data)`, it will tell you that the type of your "data" is a data.frame. 
 
@@ -28,8 +29,16 @@ Okay enough talk let's do some analysis.
 From using `summary(data)` you can see that each entry has "continent" field on it. 
 ![summary(data)](https://github.com/STAT545-UBC/zz_sheng-ting_lin-coursework/blob/master/images_gapminder/summary.JPG)
 
+As you can see, there are 12 entries for each country, so we can divide the number of countries in each continent by 12 to the actual number of countries there are (at least in this study) in each continent. 
+
+> continents  <- c(624, 300, 396, 360, 24)
+> continents  <-  continents/12
+> continents  
+[1] 52 25 33 30  2
+
 #Life expectancy 
 
+##which countries? lowest and highest life expectancy 
 
 ##Life expectancy and GDP per capital
 
