@@ -9,17 +9,24 @@ Information on these five countries include categories such as GDP per capital, 
 This little write-up will explore some of the built-in R functions and how they can reveal some interesting information in this dataset. 
 
 
-
 #Getting and taking peek at the data
 First, put the text file you just downloaded into your desired working directory. To see your current directory, type `getwd()` in your console, and set it by using `setwd(YourDirectoryPath)`. 
 
 Load the data into the R studio console by typing `data  <- read.delim("gapminderDataFiveYear.txt")`
 
 There are several ways to take a look at how your data frame looks like. What's data frame? That's just the "type" of your data object. 
-- 
-'class(data)'
+- `str(data)` tells you number of observations, preview of each column, type of objects each column contains, etc
+- `summary(data)` useful if you want to know the min, max, average, and all that for each column. (so fairly useful)
+- `head(data)` by default it returns the first six rows of the data, you can change it by specifying `head(data,10)` for example
+- `tail(data)` same thing with the head, except it shows the last 6 rows of the data frame. 
+
+What data frame? Oh, go type in `class(data)`, it will tell you that the type of your "data" is a data.frame. 
+
+Okay enough talk let's do some analysis. 
 
 #Number of countries 
+
+
 
 #Life expectancy 
 
