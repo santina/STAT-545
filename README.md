@@ -1,7 +1,8 @@
 zz_sheng-ting_lin-coursework
 ============================
 
-coursework created for zz_sheng-ting_lin
+coursework created for zz_sheng-ting_lin.
+
 This is the repo of Santina. 
 
 # A bit about me: 
@@ -9,11 +10,29 @@ This is the repo of Santina.
 * I'm in bioinformatics. 
 * First year master! 
 * new to github 
-* other interests: skiing, hiking, ~~studying on weekends~~ especially __origami__ ! 
+* other interests: skiing, hiking, ~~studying on weekends~~,  especially __origami__ ! 
+
+##About origami
+I like origami so much that I goes to the OrigamiUSA convention in New York City every year. Click [here](http://santinasaur.wordpress.com/) to see amazing pictures and story of my adventure in the origami convention. You'll never think of it the same way again! 
+
+##About being in Bioinformatics 
+I did my undergrad at McGill and was studying Anatomy and Cell Biology. Originally I was planning on becoming a doctor, but I then I realized life was bigger than memorizing protein names and body parts... Luckily I was doing a comp sci minor as well so that helped me discover what I really like is exploring things on my own and build cool things. 
+
+So far I really like the fact that here in UBC I'm getting paid to learn whatever I want. I enjoy dedicating full time in simpy just __learn__. Learning this programming language, trying this code, reading up on things, etc. 
+
+Bioinformatics would allow me to combine the knowledge of biology and comp sci together. I'm super interested in getting to know data analysis and discover things from data. Can't wait to see what I can accomplish in these two years! 
 
 ---
 
 # How I did this 
+##GitHub
+I actually have GitHub for a while but never really learned how to use it until recently. Luckly for STATS545 I have to use it so I did! The fastest way to learn is really by doing and learning from trials and errors. Things I learned: 
+
+1. You have to save and commit before you can push (duh)
+2. sometimes Github doesn't render as well as R studio or on other platform 
+3. Github has so much to offer and we need to discover that (gotta pay more attention in class now, Santina!)
+
+##Markdown
 1. for this markdown: I googled "markdown github"  __google is our friend__ 
 2. Found my repo on our dashboard 
 3. Cloned the readme file onto my R studio ()
