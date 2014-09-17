@@ -60,6 +60,7 @@ Let's make a bar graph (histogram) to quickly look at the life expectancy in gen
 `hist(data$lifeExp)` 
 ![lifeExp(data)](https://github.com/STAT545-UBC/zz_sheng-ting_lin-coursework/blob/master/images_gapminder/lifeExp_histo.jpeg)
 
+
 There we can already see that while life expectancy is left-skewed, there are some countries with a very low life expectancy (below 30!). Let's find out more. 
 
 ##which countries? lowest and highest life expectancy 
@@ -101,10 +102,10 @@ Seems like there's linear correlation of life expectancy versus population for c
 
 ![Population versus GDP per Capita](https://github.com/STAT545-UBC/zz_sheng-ting_lin-coursework/blob/master/images_gapminder/pop_gdpPercap.jpeg)
 
-Very interesting graph.... 
+Very interesting graph (not sure what to say about this).... 
 
 
 #How do I know all these stuff 
 - I listen in [STAT545](http://stat545-ubc.github.io/index.html) ! 
-- I learned through [swirl](http://swirlstats.com/students.html), seriously that's the fastest way to pick up R
+- I learned through [swirl](http://swirlstats.com/students.html), seriously that's the fastest way to pick up R! 
 - Do assignments on [R-programming on Coursera](https://www.coursera.org/course/rprog), check out their data science specialization, too! 
