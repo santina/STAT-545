@@ -34,8 +34,11 @@ From using `summary(data)` you can see that each entry has "continent" field on 
 As you can see, there are 12 entries for each country, so we can divide the number of countries in each continent by 12 to the actual number of countries there are (at least in this study) in each continent. 
 
 `> continents  <- c(624, 300, 396, 360, 24)`
+
 `> continents  <-  continents/12`
+
 `> continents  `
+
 `[1] 52 25 33 30  2`
 
 not clear ? we can put the names of the continent on top of each number. How do we do that? workflow
@@ -56,6 +59,7 @@ From the summary we can see that life expectancy has a large range... it's very 
 Let's make a bar graph (histogram) to quickly look at the life expectancy in general: 
 `hist(data$lifeExp)` 
 ![lifeExp(data)](https://github.com/STAT545-UBC/zz_sheng-ting_lin-coursework/blob/master/images_gapminder/lifeExp_histo.jpeg)
+
 There we can already see that while life expectancy is left-skewed, there are some countries with a very low life expectancy (below 30!). Let's find out more. 
 
 ##which countries? lowest and highest life expectancy 
