@@ -34,4 +34,26 @@ output: html_document
 ##assignmet time
 - was given time to wokr on 
 
+-----
+#Monday Sept 22 
 
+##ggplot2 tutorial 
+- use this [tutorial link](https://github.com/jennybc/ggplot2-tutorial)
+- you can convert R-> Rmd  -> md -> html 
+  * in R, write comment as #'  
+  * "compled as notebook" (little white button)
+- we did the scatter plot demo 
+
+##Some useful books: 
+- Dynamic Documents with R and knitr (the R series) by Yihui Xie 
+  - seem very interesting to learn a wide varieties of languages and markdown 
+
+-------
+
+#Wednesday Sept 24 
+- Went through two tutorials 
+  * [intro to dplyr](http://stat545-ubc.github.io/block009_dplyr-intro.html)
+  * [dplyr functions](http://stat545-ubc.github.io/block010_dplyr-end-single-table.html)
+
+- look up knitr and get better at it 
+  * play around with knitr::kable() to make a table prettier
