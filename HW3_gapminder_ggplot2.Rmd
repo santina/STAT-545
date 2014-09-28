@@ -10,13 +10,23 @@ In this R markdown I'm going to try out some ggplot2 features I just learned fro
 First let's see what variables we can play with: 
 
 ```{r}
+#load ggplot2 and dplyr, which we will used later
+library(ggplot2) 
+suppressPackageStartupMessages(library(dplyr))
+#load gapminder data 
 data  <- read.delim("gapminderDataFiveYear.txt")
 str(data)
 ```
 
 So we have country, continent, pop (population), gdpPercap, lifeExp, and year. That's plenty to work with. Since lifeExp has been explored quite throroughly in the tutorial, I'll focus on other variables. 
 
-#Population Boom 
+Also, there are only 2 countries in Oceania so I will exclude them from further analysis. 
+
+```{r}
+data  <- subset(data, continent != "Oceania")
+```
+
+#Population Boom - a smooth graph  
 I'm interested to find out the trend of the population growth globally and be able to visualize which groups of countries (i.e continents) contribute to more/less of the growth and to what extend. 
 
 So we need to break down the problem step by step.  
@@ -24,9 +34,22 @@ So we need to break down the problem step by step.
 - construct a smooth histogram 
 - use color to distinguish continents 
 
-Step 1: 
-```{r, echo=FALSE}
-plot(cars)
+##sum of population in each continent by year
+Sounds like a daunting task... take a moment to think what'd be a smart way to sum population by continent? 
+...
+Ans: use the %>% to pipe and filter and summarize! 
+```{r}
+population_year  <-  data %>% group_by(year, continent) %>% summarize(sum(pop)) 
+
+head(population_year, 10)
+```
+
+##Graph a smooth graph 
+Now we graph it 
+```{r}
+ggplot(data, aes(x = year, color = continent, fill=continent)) + geom_density
+(alpha=0.2) 
+
 ```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
