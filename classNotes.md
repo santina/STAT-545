@@ -57,3 +57,4 @@ output: html_document
 
 - look up knitr and get better at it 
   * play around with knitr::kable() to make a table prettier
+  
