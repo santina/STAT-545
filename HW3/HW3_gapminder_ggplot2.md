@@ -95,7 +95,9 @@ ggplot(data=population_year, aes(x=year, y=million)) +
 ```
 
 ![plot of chunk unnamed-chunk-4](./HW3_gapminder_ggplot2_files/figure-html/unnamed-chunk-4.png) 
+<!---
 ![population_year](./image_HW3/population_year.png)
+-->
 
 Note that we need to specify `stat = "identity"` because we have pre-tabulated, i.e. the heights (population in millions) are already calculated. 
 
@@ -115,8 +117,10 @@ ggplot(data=population_continent,
 ```
 
 ![plot of chunk unnamed-chunk-5](./HW3_gapminder_ggplot2_files/figure-html/unnamed-chunk-5.png) 
-![population_continent](./image_HW3/population_continent.png)
 
+<!---
+![population_continent](./image_HW3/population_continent.png)
+-->
 Looks like Asia contributes to the most... to double check, let's use a bit more R trick 
 
 
@@ -171,7 +175,10 @@ ggplot(data=wealth_continent,
 ```
 
 ![plot of chunk unnamed-chunk-7](./HW3_gapminder_ggplot2_files/figure-html/unnamed-chunk-7.png) 
+
+<!---
 ![wealth_continent](./image_HW3/wealth_continent.png)
+-->
 
 We see that Europe has the most combined wealth in the recorded years. 
 
@@ -198,8 +205,10 @@ ggplot(data, aes(x = year, y = gdpPercap))+
 ```
 
 ![plot of chunk unnamed-chunk-8](./HW3_gapminder_ggplot2_files/figure-html/unnamed-chunk-8.png) 
-
+<!---
 ![wealth_gap](./image_HW3/wealth_gap.png)
+-->
+
 
 Sadly the wealth cap is extremely large especially in the 1950 to 1980s. There are some really wealthy countries in the mid 1900 but they seem to disappeared toward 2000. To take a glimpse of what they are: 
 
