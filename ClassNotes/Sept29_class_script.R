@@ -49,5 +49,29 @@ mm3  <- function(x){
   max(x) - min(x)
 }
 
-##ensurer is another package 
-#esp important for genome study 
+##ensurer is another package , go try it!
+#esp important for genome study
+
+## make our function more general
+## input = x, two number between 0 and 1 (probabilities)
+## output = difference between the associated quantiles 
+
+
+
+myprobs  <- c(0.25, 0.75)
+quantiles <- quantile(gDat$lifeExp, probs  <- myprobs)
+max(quantiles)  - min(quantiles)
+
+
+quantile_diff <- function(x, probs = c(0.25, 0.75)){
+  assert_that(is.numeric(x))
+  quantiles <- quantile(x, p  <- probs) 
+  #pass validity check.. then will get this following line
+  max(quantiles) - min(quantiles)
+  
+  #as the default set, it basically works the same way as built-in IQR(vector)
+  
+  #more ideas: maybe set up a check point to see if probs is length 2, numeric? 
+}
+
+

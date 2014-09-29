@@ -58,3 +58,14 @@ output: html_document
 - look up knitr and get better at it 
   * play around with knitr::kable() to make a table prettier
   
+  
+-------
+
+#Monday Sept 29
+- Went through functions in R 
+  * see "Sept29_class_script.R"
+
+- critical things i didn't know before which I learned from friends today..
+  * need to create issue when submitting homework
+    - include your commit link 
+  * view peer reviews from other by clicking on "issue" next to each homework folder 
