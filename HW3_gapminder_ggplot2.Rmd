@@ -129,5 +129,9 @@ head(data  %>% select(year, country, gdpPercap) %>% filter(year == 2007)  %>% ar
 
 Woah, Kuwait used to be very rich! According to the [wikipedia article](http://en.wikipedia.org/wiki/Kuwait#Economic_prosperity): 
 "In 1951, a major public-work programme began to enable Kuwaitis to enjoy a better standard of living. By 1952, the country became the largest exporter of oil in the Persian Gulf region.......In the 1980s, there were many terror attacks in Kuwait..." 
-It's interesting to see how data can reflect the real life events. 
+
+##a little reflection 
+During the graphing process, I had a lot of trouble graphing a dataframe that I created myself. After hours of frustration (and having to go outside for breaks twice) and reading some [stack overflow posts](http://stackoverflow.com/questions/15651084/ggplot2-mapping-variable-to-y-and-using-stat-bin), I finally realize that ggplot2 has this strange habit of trying to tabulated your data. So if you have pretabulate it you need to use `stat = "identity"` 
+
+Lastly, it's interesting to see how data can reflect the real life events. By going through the ggplot2 tutorials, I learned a lot today. (ready to beome a better R ninja!)
 
