@@ -5,6 +5,8 @@ date: "Monday, September 29, 2014"
 output: html_document
 ---
 
+(since github doesn't render graphs from R, so I have manually added them in the markdown)
+
 In this R markdown I'm going to try out some ggplot2 features I just learned from Prof. Jenny Bryan's [tutorial](https://github.com/jennybc/ggplot2-tutorial) on the [gapminder data](http://www.stat.ubc.ca/~jenny/notOcto/STAT545A/examples/gapminder/data/gapminderDataFiveYear.txt) like in the last Rmd assignment. 
 
 First let's see what variables we can play with: 
@@ -48,6 +50,7 @@ Now we graph it
 ggplot(data=population_year, aes(x=year, y=million)) + geom_histogram(stat="identity", alpha=0.5)
 
 ```
+![population_year](./images_HW3/population_year.png)
 
 Note that we need to specify `stat = "identity"` because we have pre-tabulated, i.e. the heights (population in millions) are already calculated. 
 
