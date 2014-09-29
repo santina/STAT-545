@@ -28,7 +28,8 @@ suppressPackageStartupMessages(library(dplyr))
 
 ```r
 #load gapminder data 
-data  <- read.delim("gapminderDataFiveYear.txt")
+gdURL <- "http://tiny.cc/gapminder"
+data <- read.delim(file = gdURL) 
 str(data)
 ```
 
@@ -64,7 +65,8 @@ Sounds like a daunting task... take a moment to think what'd be a smart way to s
 Ans: use the %>% to pipe and filter and summarize! 
 
 ```r
-population_year  <-  data %>% group_by(year) %>% summarize(million = sum(pop)/1000000) 
+population_year  <-  data %>% group_by(year) %>% 
+    summarize(million = sum(pop)/1000000) 
 
 head(population_year, 10)
 ```
@@ -88,7 +90,8 @@ head(population_year, 10)
 Now we graph it 
 
 ```r
-ggplot(data=population_year, aes(x=year, y=million)) + geom_histogram(stat="identity", alpha=0.5)
+ggplot(data=population_year, aes(x=year, y=million)) + 
+  geom_histogram(stat="identity", alpha=0.5)
 ```
 
 ![plot of chunk unnamed-chunk-4](./HW3_gapminder_ggplot2_files/figure-html/unnamed-chunk-4.png) 
@@ -102,10 +105,13 @@ Let's try adding more information, supposed we want to see how much each contine
 
 ```r
 #create a new data.frame with total population sorted by year and continent
-population_continent  <-  data %>% group_by(year, continent) %>% summarize(million = sum(pop)/1000000) 
+population_continent  <-  data %>% group_by(year, continent) %>% 
+  summarize(million = sum(pop)/1000000) 
 
 #make a smooth graph, color by continent
-ggplot(data=population_continent, aes(x = year, y = million, color = continent)) + geom_density(stat="identity", alpha=0.6)
+ggplot(data=population_continent, 
+  aes(x = year, y = million, color = continent)) + 
+  geom_density(stat="identity", alpha=0.6)
 ```
 
 ![plot of chunk unnamed-chunk-5](./HW3_gapminder_ggplot2_files/figure-html/unnamed-chunk-5.png) 
@@ -115,7 +121,9 @@ Looks like Asia contributes to the most... to double check, let's use a bit more
 
 
 ```r
-population_continent  %>% filter(continent=="Asia")  %>% arrange(desc(year))
+population_continent  %>% 
+  filter(continent=="Asia")  %>% 
+  arrange(desc(year))
 ```
 
 ```
@@ -151,11 +159,15 @@ Using the same technique with the population, let's first visualize the trend of
 
 ```r
 #create a new data.frame with total population sorted by year and continent
-wealth_continent  <-  data %>% group_by(year, continent) %>% summarize(totalGDP = sum(gdpPercap)) 
+wealth_continent  <-  data %>% 
+  group_by(year, continent) %>% 
+  summarize(totalGDP = sum(gdpPercap)) 
 
 
 #make a smooth graph, color by continent
-ggplot(data=wealth_continent, aes(x = year, y = totalGDP, color = continent)) + geom_density(stat="identity", alpha=0.6)
+ggplot(data=wealth_continent, 
+       aes(x = year, y = totalGDP, color = continent)) + 
+  geom_density(stat="identity", alpha=0.6)
 ```
 
 ![plot of chunk unnamed-chunk-7](./HW3_gapminder_ggplot2_files/figure-html/unnamed-chunk-7.png) 
@@ -194,7 +206,8 @@ Sadly the wealth cap is extremely large especially in the 1950 to 1980s. There a
 
 ```r
 # to see the richest countries in 1950s (earliest year is 1952)
-head(data  %>% select(year, country, gdpPercap) %>% filter(year == 1952)  %>% arrange(desc(gdpPercap)))
+head(data  %>% select(year, country, gdpPercap) %>% 
+       filter(year == 1952)  %>% arrange(desc(gdpPercap)))
 ```
 
 ```
@@ -209,7 +222,8 @@ head(data  %>% select(year, country, gdpPercap) %>% filter(year == 1952)  %>% ar
 
 ```r
 # see the richest countries in 2007 
-head(data  %>% select(year, country, gdpPercap) %>% filter(year == 2007)  %>% arrange(desc(gdpPercap)))
+head(data  %>% select(year, country, gdpPercap) %>% 
+       filter(year == 2007)  %>% arrange(desc(gdpPercap)))
 ```
 
 ```
