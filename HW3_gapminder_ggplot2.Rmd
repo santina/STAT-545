@@ -59,7 +59,7 @@ Let's try adding more information, supposed we want to see how much each contine
 population_continent  <-  data %>% group_by(year, continent) %>% summarize(million = sum(pop)/1000000) 
 
 #make a smooth graph, color by continent
-ggplot(data=population_continent, aes(x = year, y = million, fill = continent)) + geom_density(stat="identity", alpha=0.4)
+ggplot(data=population_continent, aes(x = year, y = million, color = continent)) + geom_density(stat="identity", alpha=0.6)
 
 ```
 
@@ -72,4 +72,54 @@ population_continent  %>% filter(continent=="Asia")  %>% arrange(desc(year))
 
 Indeed we see that in 2007 the population in Asia was close to 4000 millions. 
 
+#The Wealth of the World 
+
+I'm now curious to see the growth (supposedly) of the total wealth measured by gdpPercap in the world. 
+
+
+##GDP per capita by year 
+Using the same technique with the population, let's first visualize the trend of the wealth and how much each continent contributes to the total wealth. 
+
+
+```{r}
+#create a new data.frame with total population sorted by year and continent
+wealth_continent  <-  data %>% group_by(year, continent) %>% summarize(totalGDP = sum(gdpPercap)) 
+
+
+#make a smooth graph, color by continent
+ggplot(data=wealth_continent, aes(x = year, y = totalGDP, color = continent)) + geom_density(stat="identity", alpha=0.6)
+
+```
+We see that Europe has the most combined wealth in the recorded years. 
+
+
+##Wealth gap by year 
+
+Now I'm curious to see the wealth gap by year... whether it increases, decreases, or fluctuates throughout the recorded years. To do that, we'll draw box graphs with raw data layed on top to see range, median, mean, and all that.  
+
+```{r}
+#(in order) create box plot and layer dots of raw data and then customize the title and theme
+library(ggthemes) 
+
+ggplot(data, aes(x = year, y = gdpPercap))+
+  geom_boxplot(aes(group = year)) +
+  geom_jitter(position = position_jitter(width = 0.1, height = 0), alpha = 1/4) +
+  ggtitle("Wealth Gap") + theme_economist()
+
+```
+
+Sadly the wealth cap is extremely large especially in the 1950 to 1980s. There are some really wealthy countries in the mid 1900 but they seem to disappeared toward 2000. To take a glimpse of what they are: 
+
+```{r}
+# to see the richest countries in 1950s (earliest year is 1952)
+head(data  %>% select(year, country, gdpPercap) %>% filter(year == 1952)  %>% arrange(desc(gdpPercap)))
+
+# see the richest countries in 2007 
+head(data  %>% select(year, country, gdpPercap) %>% filter(year == 2007)  %>% arrange(desc(gdpPercap)))
+
+```
+
+Woah, Kuwait used to be very rich! According to the [wikipedia article](http://en.wikipedia.org/wiki/Kuwait#Economic_prosperity): 
+"In 1951, a major public-work programme began to enable Kuwaitis to enjoy a better standard of living. By 1952, the country became the largest exporter of oil in the Persian Gulf region.......In the 1980s, there were many terror attacks in Kuwait..." 
+It's interesting to see how data can reflect the real life events. 
 
