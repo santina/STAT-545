@@ -16,7 +16,8 @@ First let's see what variables we can play with:
 library(ggplot2) 
 suppressPackageStartupMessages(library(dplyr))
 #load gapminder data 
-data  <- read.delim("gapminderDataFiveYear.txt")
+gdURL <- "http://tiny.cc/gapminder"
+data <- read.delim(file = gdURL) 
 str(data)
 ```
 
