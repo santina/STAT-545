@@ -71,22 +71,27 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <h2>Load the libraries and data</h2>
 <p>First load the needed libraries</p>
 <pre class="r"><code>library(ggplot2) # for making plots
-library(ggthemes)# for customizaing ggplot graphs  
-suppressPackageStartupMessages(library(dplyr))
-library(plyr)    # for easy computation with data frames</code></pre>
-<pre><code>## -------------------------------------------------------------------------
-## You have loaded plyr after dplyr - this is likely to cause problems.
-## If you need functions from both plyr and dplyr, please load plyr first, then dplyr:
-## library(plyr); library(dplyr)
-## -------------------------------------------------------------------------
+library(ggthemes)# for customizaing ggplot graphs 
+library(scales)  # for graphs scale
+library(plyr)    # for easy computation with data frames
+library(dplyr) </code></pre>
+<pre><code>## 
+## Attaching package: 'dplyr'
 ## 
-## Attaching package: 'plyr'
+## The following objects are masked from 'package:plyr':
 ## 
-## The following objects are masked from 'package:dplyr':
+##     arrange, desc, failwith, id, mutate, summarise, summarize
 ## 
-##     arrange, desc, failwith, id, mutate, summarise, summarize</code></pre>
-<pre class="r"><code>library(dplyr) 
-library(knitr)   # for rendering pretty tables</code></pre>
+## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
+## 
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union</code></pre>
+<pre class="r"><code>suppressPackageStartupMessages(library(dplyr))
+library(knitr)   # for rendering pretty tables
+library(tidyr)</code></pre>
 <p>And then the data : “data”</p>
 <pre class="r"><code>#load gapminder data 
 gdURL &lt;- &quot;http://tiny.cc/gapminder&quot;
@@ -112,24 +117,10 @@ str(data)</code></pre>
   arrange(desc(lifeExp)) %&gt;%
   filter(year==2007) %&gt;%
   filter(min_rank(desc(lifeExp)) &lt; 12)
+
 kable(topTen)</code></pre>
-<pre><code>## 
-## 
-## |country          | lifeExp| year|
-## |:----------------|-------:|----:|
-## |Japan            |   82.60| 2007|
-## |Hong Kong, China |   82.21| 2007|
-## |Iceland          |   81.76| 2007|
-## |Switzerland      |   81.70| 2007|
-## |Australia        |   81.23| 2007|
-## |Spain            |   80.94| 2007|
-## |Sweden           |   80.88| 2007|
-## |Israel           |   80.75| 2007|
-## |France           |   80.66| 2007|
-## |Canada           |   80.65| 2007|
-## |Italy            |   80.55| 2007|</code></pre>
-<p>Originally I had <code>select(country, lifeExp, year==2007)</code> and <code>filter(min_rank(lifeExp) &lt; 11)</code>. These codes won’t work because we cannot specify the value inside <code>select</code> and the filter function needs to have <code>desc(lifeExp)</code> in order to pick out the highest life expetancies instead of the lowest ones. Moreover, without <code>arrange(desc(lifeExp))</code> the output would be the right answer but in random order. Lastly, filter cannot take in more than one argument (can’t filter two different things at once)…. learned so many things (including how to do sanity check) with just one task haha.</p>
-<p>data %&gt;% select(country, lifeExp, year==2007) %&gt;% filter(min_rank(desc(lifeExp)) &lt; 11) You can also embed plots, for example:</p>
+<p>|country | lifeExp| year| |:—————-|——-:|—-:| |Japan | 82.60| 2007| |Hong Kong, China | 82.21| 2007| |Iceland | 81.76| 2007| |Switzerland | 81.70| 2007| |Australia | 81.23| 2007| |Spain | 80.94| 2007| |Sweden | 80.88| 2007| |Israel | 80.75| 2007| |France | 80.66| 2007| |Canada | 80.65| 2007| |Italy | 80.55| 2007| Originally I had <code>select(country, lifeExp, year==2007)</code> and <code>filter(min_rank(lifeExp) &lt; 11)</code>. These codes won’t work because we cannot specify the value inside <code>select</code> and the filter function needs to have <code>desc(lifeExp)</code> in order to pick out the highest life expetancies instead of the lowest ones. Moreover, without <code>arrange(desc(lifeExp))</code> the output would be the right answer but in random order. Lastly, filter cannot take in more than one argument (can’t filter two different things at once)…. learned so many things (including how to do sanity check) with just one task haha.</p>
+<p>Now make table</p>
 </div>
 <div id="data-trend-and-the-real-stories" class="section level1">
 <h1>Data trend and the real stories</h1>

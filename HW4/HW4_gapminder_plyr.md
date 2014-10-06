@@ -23,28 +23,33 @@ First load the needed libraries
 
 ```r
 library(ggplot2) # for making plots
-library(ggthemes)# for customizaing ggplot graphs  
-suppressPackageStartupMessages(library(dplyr))
+library(ggthemes)# for customizaing ggplot graphs 
+library(scales)  # for graphs scale
 library(plyr)    # for easy computation with data frames
+library(dplyr) 
 ```
 
 ```
-## -------------------------------------------------------------------------
-## You have loaded plyr after dplyr - this is likely to cause problems.
-## If you need functions from both plyr and dplyr, please load plyr first, then dplyr:
-## library(plyr); library(dplyr)
-## -------------------------------------------------------------------------
 ## 
-## Attaching package: 'plyr'
+## Attaching package: 'dplyr'
 ## 
-## The following objects are masked from 'package:dplyr':
+## The following objects are masked from 'package:plyr':
 ## 
 ##     arrange, desc, failwith, id, mutate, summarise, summarize
+## 
+## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
+## 
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
 ```
 
 ```r
-library(dplyr) 
+suppressPackageStartupMessages(library(dplyr))
 library(knitr)   # for rendering pretty tables
+library(tidyr)
 ```
 
 And then the data :  "data"
@@ -81,34 +86,30 @@ topTen  <-
   arrange(desc(lifeExp)) %>%
   filter(year==2007) %>%
   filter(min_rank(desc(lifeExp)) < 12)
+
 kable(topTen)
 ```
 
-```
-## 
-## 
-## |country          | lifeExp| year|
-## |:----------------|-------:|----:|
-## |Japan            |   82.60| 2007|
-## |Hong Kong, China |   82.21| 2007|
-## |Iceland          |   81.76| 2007|
-## |Switzerland      |   81.70| 2007|
-## |Australia        |   81.23| 2007|
-## |Spain            |   80.94| 2007|
-## |Sweden           |   80.88| 2007|
-## |Israel           |   80.75| 2007|
-## |France           |   80.66| 2007|
-## |Canada           |   80.65| 2007|
-## |Italy            |   80.55| 2007|
-```
+
+
+|country          | lifeExp| year|
+|:----------------|-------:|----:|
+|Japan            |   82.60| 2007|
+|Hong Kong, China |   82.21| 2007|
+|Iceland          |   81.76| 2007|
+|Switzerland      |   81.70| 2007|
+|Australia        |   81.23| 2007|
+|Spain            |   80.94| 2007|
+|Sweden           |   80.88| 2007|
+|Israel           |   80.75| 2007|
+|France           |   80.66| 2007|
+|Canada           |   80.65| 2007|
+|Italy            |   80.55| 2007|
 Originally I  had `select(country, lifeExp, year==2007)` and `filter(min_rank(lifeExp) < 11)`. These codes won't work because we cannot specify the value inside `select` and the filter function needs to have `desc(lifeExp)` in order to pick out the highest life expetancies instead of the lowest ones. Moreover, without `arrange(desc(lifeExp))` the output would be the right answer but in random order. Lastly, filter cannot take in more than one argument (can't filter two different things at once).... learned so many things (including how to do sanity check) with just one task haha. 
 
+Now make table
 
 
-  data %>%
-  select(country, lifeExp, year==2007) %>%
-  filter(min_rank(desc(lifeExp)) < 11)
-You can also embed plots, for example:
 
 
 
