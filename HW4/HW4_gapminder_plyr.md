@@ -26,7 +26,7 @@ library(ggplot2) # for making plots
 library(ggthemes)# for customizaing ggplot graphs 
 library(scales)  # for graphs scale
 library(plyr)    # for easy computation with data frames
-library(dplyr) 
+library(dplyr)   # do this after loading plyr
 ```
 
 ```
@@ -163,6 +163,8 @@ Aha! We found our winnter. Hong Kong, among the top 10 countries with the highes
 
 #Data trend and the real stories : Kuwait
 
+##Kuwait and its history
+
 In the last assignment, I was curious to see the wealth gap by year... whether it increases, decreases, or fluctuates throughout the recorded years. To do that, I drew a box graph with raw data layed on top to see range, median, mean, and all that. I'm adding some more features to this one and use a different theme this time. 
 
 
@@ -208,7 +210,8 @@ head(data  %>% select(year, country, gdpPercap, continent) %>%
 ## 3 2007 Singapore     47143      Asia
 ```
 
-So Kuwait used to be very rich! According to the [wikipedia article](http://en.wikipedia.org/wiki/Kuwait#Economic_prosperity), Kuwait had a high standard of living and became the largest exporter of oil in the Persian Gulf region in 1952. In 1970s, the country nationalized its oil production ending its partnership with BP.  In early 1980s, there was a economic crisis due to Souk Al-Manakh stock market crash (Kuwait's unofficial stock market) and decrease in oil price. During the Iran-Iraq war in 1980s, there were many terrist attacks in Kuwait. During that decade, Kuwait was still able to increase its oil production by ~40%. However, in 1990, Iraqi force invaded Kuwait. During one year of occupation, many were killed and several oil wells were burned. 
+So Kuwait used to be very rich! According to the [wikipedia article](http://en.wikipedia.org/wiki/Kuwait#Economic_prosperity), Kuwait had a high standard of living and became the largest exporter of oil in the Persian Gulf region in 1952. In 1970s, the country nationalized its oil production ending its partnership with BP.  In early 1980s, there was a economic crisis due to Souk Al-Manakh stock market crash (Kuwait's unofficial stock market) and decrease in oil price. During the Iran-Iraq war in 1980s, there were many terrist attacks in Kuwait. During that decade, Kuwait was still able to increase its oil production by ~40%. However, in 1990, Iraqi force invaded Kuwait. During one year of occupation, many were killed and several oil wells were burned.
+
 
 Let's take a look at Kuwait's economic trend as implied by GDP per capia 
 
@@ -225,8 +228,49 @@ graph_Kuwait
 
 ![plot of chunk unnamed-chunk-9](./HW4_gapminder_plyr_files/figure-html/unnamed-chunk-9.png) 
 
-As we can see, there's a big drop in the GDP between 1970 and 1990. I suppose all the domestic and international turmoils had a great impact on the economy, and the damages done by the Iraqi occupation as well as the following Gulf war had prevented the country from climbing up to the same economy performance it used to have. 
+As we can see, there's a big drop in the GDP between 1970 and 1990. I suppose all the domestic and international turmoils had a great impact on the economy, and the damages done by the Iraqi occupation as well as the following Gulf war had prevented the country from climbing up to the same economy performance it used to have.
 
+##linear robust on countries' gdpPercap 
+Just out of curiosity, I decided to examine the slope (calculated by `lmrob`) of countries' GDP per capita over years. So to do that, let me try something similar to what we did in class on Monday (Oct 6): getting the slope of the robust fit for each country, and graph the slopes.
+
+First get a table of all the coefficients 
+
+
+```r
+gdp_linearRob_coefs <- function(data, offset = 1952) {
+  line_fit_rob <- lmrob(gdpPercap ~ I(year - offset), data)
+  setNames(coef(line_fit), c("intercept", "slope"))
+}
+```
+
+
+```r
+#use ddply to apply function to all rows, grouped by country
+gdp_coefs_rob <- ddply(data, ~country, gdp_linear_coefs) 
+#plot the graph
+ggplot(gdp_coefs_rob, aes(x=slope, y=reorder(country, slope))) + geom_point(size=3)
+```
+
+![plot of chunk unnamed-chunk-11](./HW4_gapminder_plyr_files/figure-html/unnamed-chunk-11.png) 
+
+```r
+#see the lowest slopes using table
+gdp_coefs_rob %>%
+  arrange(desc(slope)) %>%
+  tail() %>%
+  kable()
+```
+
+
+
+|    |country    | intercept|    slope|
+|:---|:----------|---------:|--------:|
+|137 |Madagascar |      1724|   -14.14|
+|138 |Djibouti   |      3252|   -20.15|
+|139 |Angola     |      4247|   -23.25|
+|140 |Nicaragua  |      4234|   -29.43|
+|141 |Iraq       |      9149|   -48.64|
+|142 |Kuwait     |    108892| -1583.96|
 
 #Plyr versus dplyr 
 
