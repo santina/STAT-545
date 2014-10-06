@@ -159,13 +159,73 @@ gdp_coefs %>%
 |Israel           |      3692| 380.7|
 |Switzerland      |     16752| 375.4|
 
-I kept trying to use `~(country == topTen$country)`, `~topTen$country` or various variations, but I need to use `%in%` for such selection to work!
+Aha! We found our winnter. Hong Kong, among the top 10 countries with the highest life expectancies in 2007, experience the sharpest growth (linearly speaking) from 1952 to 2007. 
 
-#Data trend and the real stories 
+#Data trend and the real stories : Kuwait
 
-##Kuwait: its boom and decline 
+In the last assignment, I was curious to see the wealth gap by year... whether it increases, decreases, or fluctuates throughout the recorded years. To do that, I drew a box graph with raw data layed on top to see range, median, mean, and all that. I'm adding some more features to this one and use a different theme this time. 
 
-##Ghana: Civial war 
+
+```r
+ggplot(data, aes(x = year, y = gdpPercap))+
+  geom_boxplot(aes(group = year), outlier.colour = "red") +
+  geom_jitter(position = position_jitter(width = 0.1, height = 0), alpha = 1/4) +
+  ggtitle("Wealth Gap") +
+  stat_summary(fun.y = median, colour = "green", geom = "point", size = 2) +
+  ylab("GDP per Capita") + xlab("Year") + #x and y axises labels
+  theme_tufte() #minimalist theme 
+```
+
+![plot of chunk unnamed-chunk-7](./HW4_gapminder_plyr_files/figure-html/unnamed-chunk-7.png) 
+
+
+The wealth cap is extremely large especially in the 1950 to 1980s. There are some really wealthy countries in the mid 1900 but they seem to disappeared toward 2000. To see what they are: 
+
+
+```r
+# to see the top 3 richest countries in 1950s (earliest year is 1952)
+head(data  %>% select(year, country, gdpPercap, continent) %>% 
+       filter(year == 1952)  %>% arrange(desc(gdpPercap)), 3)
+```
+
+```
+##   year       country gdpPercap continent
+## 1 1952        Kuwait    108382      Asia
+## 2 1952   Switzerland     14734    Europe
+## 3 1952 United States     13990  Americas
+```
+
+```r
+# see the top 3 richest countries in 2007 
+head(data  %>% select(year, country, gdpPercap, continent) %>% 
+       filter(year == 2007)  %>% arrange(desc(gdpPercap)), 3)
+```
+
+```
+##   year   country gdpPercap continent
+## 1 2007    Norway     49357    Europe
+## 2 2007    Kuwait     47307      Asia
+## 3 2007 Singapore     47143      Asia
+```
+
+So Kuwait used to be very rich! According to the [wikipedia article](http://en.wikipedia.org/wiki/Kuwait#Economic_prosperity), Kuwait had a high standard of living and became the largest exporter of oil in the Persian Gulf region in 1952. In 1970s, the country nationalized its oil production ending its partnership with BP.  In early 1980s, there was a economic crisis due to Souk Al-Manakh stock market crash (Kuwait's unofficial stock market) and decrease in oil price. During the Iran-Iraq war in 1980s, there were many terrist attacks in Kuwait. During that decade, Kuwait was still able to increase its oil production by ~40%. However, in 1990, Iraqi force invaded Kuwait. During one year of occupation, many were killed and several oil wells were burned. 
+
+Let's take a look at Kuwait's economic trend as implied by GDP per capia 
+
+
+```r
+d_kuwait <-  filter(data, country == "Kuwait")
+graph_Kuwait <- ggplot(d_kuwait, aes(x = year, y=gdpPercap)) + 
+  ggtitle("Kuwait's economy trend") +
+  geom_point() + 
+  geom_line()+
+  theme_stata()
+graph_Kuwait
+```
+
+![plot of chunk unnamed-chunk-9](./HW4_gapminder_plyr_files/figure-html/unnamed-chunk-9.png) 
+
+As we can see, there's a big drop in the GDP between 1970 and 1990. I suppose all the domestic and international turmoils had a great impact on the economy, and the damages done by the Iraqi occupation as well as the following Gulf war had prevented the country from climbing up to the same economy performance it used to have. 
 
 
 #Plyr versus dplyr 
