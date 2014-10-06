@@ -239,10 +239,11 @@ First get a table of all the coefficients
 ```r
 gdp_linearRob_coefs <- function(data, offset = 1952) {
   line_fit_rob <- lmrob(gdpPercap ~ I(year - offset), data)
-  setNames(coef(line_fit), c("intercept", "slope"))
+  setNames(coef(line_fit_rob), c("intercept", "slope"))
 }
 ```
 
+Then we graph it 
 
 ```r
 #use ddply to apply function to all rows, grouped by country
@@ -272,6 +273,6 @@ gdp_coefs_rob %>%
 |141 |Iraq       |      9149|   -48.64|
 |142 |Kuwait     |    108892| -1583.96|
 
-#Plyr versus dplyr 
+We can see that kuwait has the smallest / most negative slope among  all countries. We can also see that clearly when using table to reveal those with the smallest slopes 
 
 
