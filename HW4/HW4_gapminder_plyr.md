@@ -75,7 +75,7 @@ str(data)
 
 Here I will attempt to challenge myself with some hard questions and use plyr, dplyr and some basic R techniques to solve the questions. Like many people, I like to ask about what's the most/least and what's the trend of something over time.  
 
-With the variables in the gapminder data in mind, I'd like to find out **Which of the top 10 countries with the highest lifeExp in 2007 experience the greatest growth in GDP per capital in the last 20 years?** 
+With the variables in the gapminder data in mind, I'd like to find out **Which of the top 10 countries with the highest lifeExp in 2007 experience the greatest growth in GDP per capital?** 
 
 First we need to find out what are those 10 countries 
 
@@ -85,7 +85,7 @@ topTen  <-
   select(country, lifeExp, year) %>%
   arrange(desc(lifeExp)) %>%
   filter(year==2007) %>%
-  filter(min_rank(desc(lifeExp)) < 12)
+  filter(min_rank(desc(lifeExp)) < 11)
 
 kable(topTen)
 ```
@@ -104,14 +104,62 @@ kable(topTen)
 |Israel           |   80.75| 2007|
 |France           |   80.66| 2007|
 |Canada           |   80.65| 2007|
-|Italy            |   80.55| 2007|
-Originally I  had `select(country, lifeExp, year==2007)` and `filter(min_rank(lifeExp) < 11)`. These codes won't work because we cannot specify the value inside `select` and the filter function needs to have `desc(lifeExp)` in order to pick out the highest life expetancies instead of the lowest ones. Moreover, without `arrange(desc(lifeExp))` the output would be the right answer but in random order. Lastly, filter cannot take in more than one argument (can't filter two different things at once).... learned so many things (including how to do sanity check) with just one task haha. 
+Originally I  had `select(country, lifeExp, year==2007)` and `filter(min_rank(lifeExp) < 11)`. These codes won't work because we cannot specify the value inside `select` and the filter function needs to have `desc(lifeExp)` in order to pick out the highest life expetancies instead of the lowest ones. Moreover, without `arrange(desc(lifeExp))` the output would be the right answer but in random order. learned so many things (including how to do sanity check) with just one task haha. 
 
-Now make table
+Can filter take more than one crition of filtering? 
+
+Now we have those ten countries, we want to find which one has the sharpest increase in GDP per capita. We can try doing this by graph and see which trend has the steepest slope. 
+
+
+```r
+#filter data, with the countries in the top contry list 
+d_sub <-  filter(data, country %in% topTen$country)
+#construct the graph, color each trend by country
+graphTop <- ggplot(d_sub, aes(x = year, y=gdpPercap)) + 
+  geom_point() + 
+  geom_line(aes(color=country)) 
+#graph 
+graphTop
+```
+
+![plot of chunk unnamed-chunk-4](./HW4_gapminder_plyr_files/figure-html/unnamed-chunk-4.png) 
+Looks like it's hard to see which country has its gdpPercap increase at the greatest speed. We will try using linear regression to obtain exact slope for each trend. 
+
+First we need a function that will return coefficients (slope and intercept)
+
+
+```r
+gdp_linear_coefs <- function(data, offset = 1952) {
+  line_fit <- lm(gdpPercap ~ I(year - offset), data)
+  setNames(coef(line_fit), c("intercept", "slope"))
+}
+```
+
+Then use `dplyr` to obtain coefficients of all fits for all the top ten countries. 
+
+```r
+gdp_coefs <- ddply(d_sub, ~country, gdp_linear_coefs) 
+gdp_coefs %>%
+  arrange(desc(slope)) %>%
+  kable()
+```
 
 
 
+|country          | intercept| slope|
+|:----------------|---------:|-----:|
+|Hong Kong, China |     -1843| 657.2|
+|Japan            |      2414| 557.7|
+|Iceland          |      6389| 514.3|
+|Canada           |      9996| 451.5|
+|Spain            |      1921| 440.3|
+|France           |      6797| 437.7|
+|Australia        |      8242| 426.9|
+|Sweden           |      8284| 424.0|
+|Israel           |      3692| 380.7|
+|Switzerland      |     16752| 375.4|
 
+I kept trying to use `~(country == topTen$country)`, `~topTen$country` or various variations, but I need to use `%in%` for such selection to work!
 
 #Data trend and the real stories 
 
