@@ -5,6 +5,11 @@ coursework created for zz_sheng-ting_lin.
 
 This is the repo of Santina. 
 
+# Important links to .md of 
+* [HW2] (https://github.com/STAT545-UBC/zz_sheng-ting_lin-coursework/blob/master/HW2/HW2_gapminder_note.Rmd)
+* [HW3] (https://github.com/STAT545-UBC/zz_sheng-ting_lin-coursework/blob/master/HW3/HW3_gapminder_ggplot2.md)
+* [HW4] (https://github.com/STAT545-UBC/zz_sheng-ting_lin-coursework/tree/master/HW4)
+
 # A bit about me: 
 
 * I'm in bioinformatics. 
