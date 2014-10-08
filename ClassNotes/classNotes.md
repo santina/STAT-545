@@ -69,3 +69,21 @@ output: html_document
   * need to create issue when submitting homework
     - include your commit link 
   * view peer reviews from other by clicking on "issue" next to each homework folder 
+
+-------
+#Monday Oct 6 
+- ordering your factors  (though class notes not posted on website yet)
+- linear regression (see October6_class_script) on gapminder 
+
+
+-------
+
+#Wednesday Oct 8
+- went through outline for today
+  * for homework 4, find an interesting dataset to work with and analyze it 
+- read in data (read.table, read.delim?) make sure you have the right arguments 
+- read and write data and R objects
+  * see October8_class_script, 
+    - read.delim() and write.table()
+    - saveRDS() and readRDS() 
+    - dput() and dget() 
