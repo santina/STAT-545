@@ -24,7 +24,6 @@ nrow(data)
 
 #make a plot
 ggplot(j_coefs, aes(x=slope, y=country)) + geom_point(size=3)
-#?????????????what's slope? 
 
 
 #reorder the plot (reorder your data lebel)
@@ -69,8 +68,6 @@ ggplot(selected_dropped, aes(x=year, y=lifeExp,group=country))+
   geom_line(aes(color=country))
 
 #with or without groups give the same grap
-
-#?????????what does "group" do? 
 
 
 # reorder (your_Factor, your_quant_var, your_summarization_function)
