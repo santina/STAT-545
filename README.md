@@ -6,9 +6,10 @@ coursework created for zz_sheng-ting_lin.
 This is the repo of Santina. 
 
 # Important links to .md of 
-* [HW2] (https://github.com/STAT545-UBC/zz_sheng-ting_lin-coursework/blob/master/HW2/HW2_gapminder_note.Rmd)
-* [HW3] (https://github.com/STAT545-UBC/zz_sheng-ting_lin-coursework/blob/master/HW3/HW3_gapminder_ggplot2.md)
-* [HW4] (https://github.com/STAT545-UBC/zz_sheng-ting_lin-coursework/tree/master/HW4)
+* HW1: Edit readme, as a start to R markdown. 
+* [HW2] (https://github.com/STAT545-UBC/zz_sheng-ting_lin-coursework/blob/master/HW2/HW2_gapminder_note.Rmd): trying out basic R functions and graphs on gapminder 
+* [HW3] (https://github.com/STAT545-UBC/zz_sheng-ting_lin-coursework/blob/master/HW3/HW3_gapminder_ggplot2.md): exploring dplyr on gapminder and ggplot2
+* [HW4] (https://github.com/STAT545-UBC/zz_sheng-ting_lin-coursework/tree/master/HW4): using plyr and dplyr as well as ggplot2, with functions and more advanced functions
 
 # A bit about me: 
 
