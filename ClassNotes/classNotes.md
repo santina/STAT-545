@@ -87,3 +87,13 @@ output: html_document
     - read.delim() and write.table()
     - saveRDS() and readRDS() 
     - dput() and dget() 
+    
+    
+-------
+#Wednesday Oct 15 
+- [standards](http://stat545-ubc.github.io/block015_graph-dos-donts.html) on making graphs
+  * show the data, not just the artificial statistic model (trend line, etc)
+  * check out [R catalog] (http://shinyapps.stat.ubc.ca/r-graph-catalog/)
+- simplify your graph 
+- don't use pie chart (people can't perceive area and angle well)
+- use label, not legend, and make their color match 
