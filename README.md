@@ -10,6 +10,7 @@ This is the repo of Santina.
 * [HW2] (https://github.com/STAT545-UBC/zz_sheng-ting_lin-coursework/blob/master/HW2/HW2_gapminder_note.Rmd): trying out basic R functions and graphs on gapminder 
 * [HW3] (https://github.com/STAT545-UBC/zz_sheng-ting_lin-coursework/blob/master/HW3/HW3_gapminder_ggplot2.md): exploring dplyr on gapminder and ggplot2
 * [HW4] (https://github.com/STAT545-UBC/zz_sheng-ting_lin-coursework/tree/master/HW4): using plyr and dplyr as well as ggplot2, with functions and more advanced functions
+* [HW5] (https://github.com/STAT545-UBC/zz_sheng-ting_lin-coursework/blob/master/HW5/HW5_factorBoss.md) take you directly to the .md file! This is the final assignment for STAT545, covering organizing factors, reading/writingfiles, and much more! 
 
 # A bit about me: 
 
