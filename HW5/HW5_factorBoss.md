@@ -52,7 +52,7 @@ str(dataExcerpt)
 write.table(dataExcerpt, "gapminder_excerpt.txt") 
 ```
 
-Let's try to see if it works:
+Let's try to see how well we can read from the text file we just created. 
 
 ```r
 gapExcerpt <-  read.delim(file = "gapminder_excerpt.txt")
@@ -63,8 +63,70 @@ str(gapExcerpt)
 ## 'data.frame':	1704 obs. of  1 variable:
 ##  $ country.year.pop.continent.lifeExp.gdpPercap: Factor w/ 1704 levels "1 Afghanistan 1952 8425333 Asia 28.801 779.4453145",..: 1 817 928 1039 1150 1261 1372 1483 1594 2 ...
 ```
-Hum.... a little massier than the result of `str(dataExcerpt)`
+Hum.... a little massier than the result of `str(dataExcerpt)`. Let's come back to this later. 
+
+# Drop Oceania 
+Since there are only two countries in this "continent" category, I will remove it and use `droplevels()` to ensure the level is completely clean of Oceania.
+
+
+```r
+# take everything except those whose continent is Oceania 
+dataExcerpt2 <- dataExcerpt %>%
+  filter(continent != "Oceania") %>%
+  droplevels
+# check if Oceania is dropped 
+dataExcerpt2$continent %>%
+  table()
+```
+
+```
+## dataExcerpt2$continent
+##   Africa Americas     Asia   Europe 
+##      624      300      396      360
+```
+
+```r
+# versus 
+dataExcerpt$continent %>%
+  table()
+```
+
+```
+## dataExcerpt$continent
+##   Africa Americas     Asia   Europe  Oceania 
+##      624      300      396      360       24
+```
+
+Yes, so Oceania is no longer included in our data set `dataExcerpt2`. The number of rows in dataExcerpt is 1704 versus in the Oceania-dropped dataExcerpt is 1680. 
+
+
+# life expectancy 
+
+Let's look at the slopes of the life expectancy over years for each country. Using `~country + continent` we basically do this for every single country while retaining their continent identity (let me know if I can describe this better). 
+
+
+```r
+j_coefs <- ddply(dataExcerpt, ~ country + continent, function(dat, offset = 1952) {
+  the_fit <- lm(lifeExp ~ I(year - offset), dat)
+  setNames(coef(the_fit), c("intercept", "slope"))
+}) #this chunk was copied from the homework outline  
+
+head(j_coefs) %>% kable()
+```
 
 
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+|country     |continent | intercept|  slope|
+|:-----------|:---------|---------:|------:|
+|Afghanistan |Asia      |     29.91| 0.2753|
+|Albania     |Europe    |     59.23| 0.3347|
+|Algeria     |Africa    |     43.38| 0.5693|
+|Angola      |Africa    |     32.13| 0.2093|
+|Argentina   |Americas  |     62.69| 0.2317|
+|Australia   |Oceania   |     68.40| 0.2277|
+
+Upon closer examination (with inline R code which you can't see unless you go to view raw), there are 4 columns, 142 rows. There are 142 unique countries and 5 unique continents.  
+
+# Order of data vs order of factor levels 
+
+

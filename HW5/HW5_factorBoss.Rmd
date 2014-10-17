@@ -57,14 +57,35 @@ Since there are only two countries in this "continent" category, I will remove i
 
 ```{r}
 # take everything except those whose continent is Oceania 
-dataExcerpt <- dataExcerpt %>%
+dataExcerpt2 <- dataExcerpt %>%
   filter(continent != "Oceania") %>%
   droplevels
 # check if Oceania is dropped 
 dataExcerpt2$continent %>%
   table()
+# versus 
+dataExcerpt$continent %>%
+  table()
 ```
 
-Yes, so Oceania is no longer included in our data set `dataExcerpt`. 
+Yes, so Oceania is no longer included in our data set `dataExcerpt2`. The number of rows in dataExcerpt is `r nrow(dataExcerpt)` versus in the Oceania-dropped dataExcerpt is `r nrow(dataExcerpt2)`. 
+
+
+# life expectancy 
+
+Let's look at the slopes of the life expectancy over years for each country. Using `~country + continent` we basically do this for every single country while retaining their continent identity (let me know if I can describe this better). 
+
+```{r, results="asis"}
+j_coefs <- ddply(dataExcerpt, ~ country + continent, function(dat, offset = 1952) {
+  the_fit <- lm(lifeExp ~ I(year - offset), dat)
+  setNames(coef(the_fit), c("intercept", "slope"))
+}) #this chunk was copied from the homework outline  
+
+head(j_coefs) %>% kable()
+```
+
+Upon closer examination (with inline R code which you can't see unless you go to view raw), there are `r ncol(j_coefs)` columns, `r nrow(j_coefs)` rows. There are `r nlevels(j_coefs$country)` unique countries and `r nlevels(j_coefs$continent)` unique continents.  
+
+# Order of data vs order of factor levels 
 
 
