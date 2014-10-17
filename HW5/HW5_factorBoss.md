@@ -21,12 +21,13 @@ Just some notes to remind me what I can use
 load some packages 
 
 ```r
-library(ggplot2) # for making plots
-library(ggthemes)# for customizaing ggplot graphs 
-library(scales)  # for graphs scale
-library(plyr)    # for easy computation with data frames
-library(dplyr)   # do this after loading plyr
-library(knitr)   # for rendering pretty tables
+library(ggplot2)    # for making plots
+library(ggthemes)   # for customizaing ggplot graphs 
+library(scales)     # for graphs scale
+library(plyr)       # for easy computation with data frames
+library(dplyr)      # do this after loading plyr
+library(knitr)      # for rendering pretty tables
+library(robustbase) # for linear robust regression 
 ```
 
 Loading our gapminder data 
@@ -52,18 +53,7 @@ str(dataExcerpt)
 write.table(dataExcerpt, "gapminder_excerpt.txt") 
 ```
 
-Let's try to see how well we can read from the text file we just created. 
 
-```r
-gapExcerpt <-  read.delim(file = "gapminder_excerpt.txt")
-str(gapExcerpt)
-```
-
-```
-## 'data.frame':	1704 obs. of  1 variable:
-##  $ country.year.pop.continent.lifeExp.gdpPercap: Factor w/ 1704 levels "1 Afghanistan 1952 8425333 Asia 28.801 779.4453145",..: 1 817 928 1039 1150 1261 1372 1483 1594 2 ...
-```
-Hum.... a little massier than the result of `str(dataExcerpt)`. Let's come back to this later. 
 
 # Drop Oceania 
 Since there are only two countries in this "continent" category, I will remove it and use `droplevels()` to ensure the level is completely clean of Oceania.
@@ -263,21 +253,21 @@ ggplot(post_arrange, aes(x=slope, y=country)) + geom_point(size=3) +
   ggtitle("post_arrange graph")
 ```
 
-![plot of chunk unnamed-chunk-9](./HW5_factorBoss_files/figure-html/unnamed-chunk-91.png) 
+![plot of chunk unnamed-chunk-8](./HW5_factorBoss_files/figure-html/unnamed-chunk-81.png) 
 
 ```r
 ggplot(post_reorder, aes(x=slope, y=country)) + geom_point(size=3) +
   ggtitle("post_reorder graph")
 ```
 
-![plot of chunk unnamed-chunk-9](./HW5_factorBoss_files/figure-html/unnamed-chunk-92.png) 
+![plot of chunk unnamed-chunk-8](./HW5_factorBoss_files/figure-html/unnamed-chunk-82.png) 
 
 ```r
 ggplot(post_both, aes(x=slope, y=country)) + geom_point(size=3) +
   ggtitle("post_both graph")
 ```
 
-![plot of chunk unnamed-chunk-9](./HW5_factorBoss_files/figure-html/unnamed-chunk-93.png) 
+![plot of chunk unnamed-chunk-8](./HW5_factorBoss_files/figure-html/unnamed-chunk-83.png) 
 
 Now I finally understand!  For `post_arrange`, the table is simply organized by the values of slope. However, `post_reorder` has the part `country = reorder(country, slope)` which __order the country factor based on the slope__. The categorical variable, country, has its levels reordered based on the values of a second variable, slope. In the case of `post_both` the same factor arrangement is made, and the table is arrange by slope. That's why the tables for `post_both` and `post_arrange` look the same, though the produce different plots because one has its country factor organized to the slope, the other one doesn't. 
 
@@ -325,23 +315,243 @@ dataExcerpt3$country <- mapvalues(dataExcerpt3$country, countries, adjectives)
 Now let's check if we have change the country factor levels
 
 ```r
+#remember dataExcerpt2 is the one with Oceania dropped 
 str(dataExcerpt3)
 ```
 
-'data.frame':	36 obs. of  6 variables:
- $ country  : Factor w/ 3 levels "nice","meticulous",..: 1 1 1 1 1 1 1 1 1 1 ...
- $ year     : int  1952 1957 1962 1967 1972 1977 1982 1987 1992 1997 ...
- $ pop      : num  14785584 17010154 18985849 20819767 22284500 ...
- $ continent: Factor w/ 3 levels "Americas","Asia",..: 1 1 1 1 1 1 1 1 1 1 ...
- $ lifeExp  : num  68.8 70 71.3 72.1 72.9 ...
- $ gdpPercap: num  11367 12490 13462 16077 18971 ...
+```
+## 'data.frame':	36 obs. of  6 variables:
+##  $ country  : Factor w/ 3 levels "nice","meticulous",..: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ year     : int  1952 1957 1962 1967 1972 1977 1982 1987 1992 1997 ...
+##  $ pop      : num  14785584 17010154 18985849 20819767 22284500 ...
+##  $ continent: Factor w/ 3 levels "Americas","Asia",..: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ lifeExp  : num  68.8 70 71.3 72.1 72.9 ...
+##  $ gdpPercap: num  11367 12490 13462 16077 18971 ...
+```
 
 ```r
 levels(dataExcerpt3$country)
 ```
 
-[1] "nice"         "meticulous"   "hard-working"
+```
+## [1] "nice"         "meticulous"   "hard-working"
+```
 Awesome! 
 
 # Reorder a factor 
+Now I'm gonna reorder `dataExcerpt3` by its factor "continent" by population. 
 
+
+```r
+pop_ordered <- dataExcerpt2 %>%
+  mutate(continent = reorder(continent, pop))
+levels(pop_ordered$continent)
+```
+
+```
+## [1] "Africa"   "Europe"   "Americas" "Asia"
+```
+Now it would be interesting to see which one has the greatest growth in population over the years, based on linear model. 
+
+
+```r
+#function for finding population growth's linear robust fit 
+pop_linearRob_coefs <- function(pop_ordered, offset = 1952) {
+  line_fit_rob <- lmrob(pop ~ I(year - offset), pop_ordered)
+  setNames(coef(line_fit_rob), c("intercept", "slope"))
+}
+# apply to the data set ordered by continent based on population 
+pop_continent  <- ddply(pop_ordered, ~continent, pop_linearRob_coefs)
+pop_continent
+```
+
+```
+##   continent intercept  slope
+## 1    Africa   2859730  66156
+## 2    Europe   6216863  18267
+## 3  Americas   3828268  62207
+## 4      Asia   9191601 146242
+```
+
+We see that Asia probably has the greatest growth rate per year based on the slope, whereas Europe has the smallest growth rate. 
+
+Now we graph it to see what's up. 
+
+
+```r
+ggplot(pop_ordered, aes(x = year, y = pop, colour = continent)) +
+  facet_wrap( ~ continent, ncol = 2) +
+  xlab("Year") +
+  ylab("Population")+
+  ggtitle("Population over time")+
+  geom_point(alpha = 0.7)+
+  theme_calc()+
+  theme(legend.position = "none") 
+```
+
+![plot of chunk unnamed-chunk-14](./HW5_factorBoss_files/figure-html/unnamed-chunk-14.png) 
+For some reason, even with `theme(legend.position = "none")` I couldn't remove the legend until I put it in the last line. It was right after the facet_wrap and the legend still exist. Something to note down.... 
+
+Now we can see that Asian continent's population growth has been largely contributed by two countries. What are they? 
+
+We can use the same method as before, except applying it only on Asia. 
+
+```r
+asia_pop  <- pop_ordered %>% filter(continent == "Asia") %>% droplevels
+
+Asianpop_linearRob_coefs <- function(asia_pop, offset = 1952) {
+  line_fit_rob <- lmrob(pop ~ I(year - offset), asia_pop)
+  setNames(coef(line_fit_rob), c("intercept", "slope"))
+}
+# apply to the data set ordered by continent based on population 
+AsianPopulation  <- ddply(asia_pop, ~country, Asianpop_linearRob_coefs)
+```
+
+```
+## Warning: M-step did NOT converge. Returning unconverged SM-estimate
+## Warning: M-step did NOT converge. Returning unconverged SM-estimate
+```
+
+```r
+AsianPopulation %>%
+  arrange(desc(slope)) %>%
+  head %>%
+  kable(format = "pandoc", 
+        caption = "Top 5 countries with the greatest population growth")
+```
+
+
+
+Table: Top 5 countries with the greatest population growth
+
+country        intercept      slope
+------------  ----------  ---------
+China          555867011   14777049
+India          286656432   14731793
+Indonesia       72643785    2744751
+Pakistan        28617420    2357742
+Bangladesh      35390045    1976238
+Philippines     17656104    1266666
+
+Aha, we found them. They were China and India 
+
+# Write and read data to file 
+
+In the beginning of the assignment I wrote `dataExcerpt` into `gapminder_excerpt.txt`. Now let's try to see how well we can read from the text file we  created. 
+
+```r
+gapExcerpt <-  read.delim(file = "gapminder_excerpt.txt")
+
+str(gapExcerpt)
+```
+
+```
+## 'data.frame':	1704 obs. of  1 variable:
+##  $ country.year.pop.continent.lifeExp.gdpPercap: Factor w/ 1704 levels "1 Afghanistan 1952 8425333 Asia 28.801 779.4453145",..: 1 817 928 1039 1150 1261 1372 1483 1594 2 ...
+```
+
+```r
+# file read from the file we wrote to 
+
+str(dataExcerpt)
+```
+
+```
+## 'data.frame':	1704 obs. of  6 variables:
+##  $ country  : Factor w/ 142 levels "Afghanistan",..: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ year     : int  1952 1957 1962 1967 1972 1977 1982 1987 1992 1997 ...
+##  $ pop      : num  8425333 9240934 10267083 11537966 13079460 ...
+##  $ continent: Factor w/ 5 levels "Africa","Americas",..: 3 3 3 3 3 3 3 3 3 3 ...
+##  $ lifeExp  : num  28.8 30.3 32 34 36.1 ...
+##  $ gdpPercap: num  779 821 853 836 740 ...
+```
+
+```r
+#our original data read from URL
+```
+Hum.... `str(gapExcerpt)` is a little massier than the result of `str(dataExcerpt)`. 
+
+
+```r
+identical(dataExcerpt, gapExcerpt)
+```
+
+```
+## [1] FALSE
+```
+So the data is not exactly the same after we save it and read it again. To see how they are organized: 
+
+
+```r
+dataExcerpt %>%
+  head %>%
+  kable(format = "pandoc", 
+        caption = "Data read from URL")
+```
+
+
+
+Table: Data read from URL
+
+country        year        pop  continent    lifeExp   gdpPercap
+------------  -----  ---------  ----------  --------  ----------
+Afghanistan    1952    8425333  Asia           28.80       779.4
+Afghanistan    1957    9240934  Asia           30.33       820.9
+Afghanistan    1962   10267083  Asia           32.00       853.1
+Afghanistan    1967   11537966  Asia           34.02       836.2
+Afghanistan    1972   13079460  Asia           36.09       740.0
+Afghanistan    1977   14880372  Asia           38.44       786.1
+
+```r
+gapExcerpt %>%
+  head %>%
+  kable(format = "pandoc", 
+        caption = "Data read from file gapminder_excerpt.txt ")
+```
+
+
+
+Table: Data read from file gapminder_excerpt.txt 
+
+country.year.pop.continent.lifeExp.gdpPercap        
+----------------------------------------------------
+1 Afghanistan 1952 8425333 Asia 28.801 779.4453145  
+2 Afghanistan 1957 9240934 Asia 30.332 820.8530296  
+3 Afghanistan 1962 10267083 Asia 31.997 853.10071   
+4 Afghanistan 1967 11537966 Asia 34.02 836.1971382  
+5 Afghanistan 1972 13079460 Asia 36.088 739.9811058 
+6 Afghanistan 1977 14880372 Asia 38.438 786.11336   
+
+As we can see `gapExcerpt` is not properly delimited. I assume that somewhere in reading the file, the factors were not preserved properly. So one approach would be to add some arguments. 
+
+```r
+gapExcerpt_delim <- read.delim(file = "gapminder_excerpt.txt", 
+                               header = TRUE, sep = " ") 
+
+gapExcerpt_delim %>%
+  head %>%
+  kable(format = "pandoc", 
+        caption = "Data read from file gapminder_excerpt.txt ")
+```
+
+
+
+Table: Data read from file gapminder_excerpt.txt 
+
+country        year        pop  continent    lifeExp   gdpPercap
+------------  -----  ---------  ----------  --------  ----------
+Afghanistan    1952    8425333  Asia           28.80       779.4
+Afghanistan    1957    9240934  Asia           30.33       820.9
+Afghanistan    1962   10267083  Asia           32.00       853.1
+Afghanistan    1967   11537966  Asia           34.02       836.2
+Afghanistan    1972   13079460  Asia           36.09       740.0
+Afghanistan    1977   14880372  Asia           38.44       786.1
+
+Looks much better! 
+
+# thoughts and progress
+I spent a lot of time thinking about `rearrange()` and `arrange()` functions. Those names make me intuitively think that they would do something to the data, which will reflect on how the tables are shown. But no, so that was a bit confusing at first. 
+
+This assignment was a lot less open ended, which allowed me to work on it non-stop (and it felt great!). I had to make several references to my older assignments to remember how to use ggplot2, so it was good that I documented those things well. The workflow/outline of the assignment guideline lead me to learn many new things and use the things we covered in class in practice, such as setting arguments in read.table, droplevels, ordering factors, and mapvalues, etc. 
+
+I also get to experiment with many things, such adding more argument to kable. Overall, I enjoyed the intense mental concentration I experienced during the working of this assignment. 

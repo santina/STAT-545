@@ -27,12 +27,13 @@ Just some notes to remind me what I can use
 ## same old stuff: packages and the gapminder data
 load some packages 
 ```{r, message=FALSE}
-library(ggplot2) # for making plots
-library(ggthemes)# for customizaing ggplot graphs 
-library(scales)  # for graphs scale
-library(plyr)    # for easy computation with data frames
-library(dplyr)   # do this after loading plyr
-library(knitr)   # for rendering pretty tables
+library(ggplot2)    # for making plots
+library(ggthemes)   # for customizaing ggplot graphs 
+library(scales)     # for graphs scale
+library(plyr)       # for easy computation with data frames
+library(dplyr)      # do this after loading plyr
+library(knitr)      # for rendering pretty tables
+library(robustbase) # for linear robust regression 
 ```
 
 Loading our gapminder data 
@@ -44,13 +45,7 @@ str(dataExcerpt)
 write.table(dataExcerpt, "gapminder_excerpt.txt") 
 ```
 
-Let's try to see how well we can read from the text file we just created. 
-```{r}
-gapExcerpt <-  read.delim(file = "gapminder_excerpt.txt")
-str(gapExcerpt)
 
-```
-Hum.... a little massier than the result of `str(dataExcerpt)`. Let's come back to this later. 
 
 # Drop Oceania 
 Since there are only two countries in this "continent" category, I will remove it and use `droplevels()` to ensure the level is completely clean of Oceania.
@@ -158,15 +153,122 @@ dataExcerpt3  <- dataExcerpt2 %>%
   filter(country %in% countries) %>%
   droplevels 
 dataExcerpt3$country <- mapvalues(dataExcerpt3$country, countries, adjectives)
-
 ```
 
 Now let's check if we have change the country factor levels
-```{r, results="asis"}
+```{r}
+#remember dataExcerpt2 is the one with Oceania dropped 
 str(dataExcerpt3)
 levels(dataExcerpt3$country)
 ```
 Awesome! 
 
 # Reorder a factor 
+Now I'm gonna reorder `dataExcerpt3` by its factor "continent" by population. 
 
+```{r}
+pop_ordered <- dataExcerpt2 %>%
+  mutate(continent = reorder(continent, pop))
+levels(pop_ordered$continent)
+```
+Now it would be interesting to see which one has the greatest growth in population over the years, based on linear model. 
+
+```{r}
+#function for finding population growth's linear robust fit 
+pop_linearRob_coefs <- function(pop_ordered, offset = 1952) {
+  line_fit_rob <- lmrob(pop ~ I(year - offset), pop_ordered)
+  setNames(coef(line_fit_rob), c("intercept", "slope"))
+}
+# apply to the data set ordered by continent based on population 
+pop_continent  <- ddply(pop_ordered, ~continent, pop_linearRob_coefs)
+pop_continent
+```
+
+We see that Asia probably has the greatest growth rate per year based on the slope, whereas Europe has the smallest growth rate. 
+
+Now we graph it to see what's up. 
+
+```{r}
+ggplot(pop_ordered, aes(x = year, y = pop, colour = continent)) +
+  facet_wrap( ~ continent, ncol = 2) +
+  xlab("Year") +
+  ylab("Population")+
+  ggtitle("Population over time")+
+  geom_point(alpha = 0.7)+
+  theme_calc()+
+  theme(legend.position = "none") 
+```
+For some reason, even with `theme(legend.position = "none")` I couldn't remove the legend until I put it in the last line. It was right after the facet_wrap and the legend still exist. Something to note down.... 
+
+Now we can see that Asian continent's population growth has been largely contributed by two countries. What are they? 
+
+We can use the same method as before, except applying it only on Asia. 
+```{r, results="asis"}
+asia_pop  <- pop_ordered %>% filter(continent == "Asia") %>% droplevels
+
+Asianpop_linearRob_coefs <- function(asia_pop, offset = 1952) {
+  line_fit_rob <- lmrob(pop ~ I(year - offset), asia_pop)
+  setNames(coef(line_fit_rob), c("intercept", "slope"))
+}
+# apply to the data set ordered by continent based on population 
+AsianPopulation  <- ddply(asia_pop, ~country, Asianpop_linearRob_coefs)
+AsianPopulation %>%
+  arrange(desc(slope)) %>%
+  head %>%
+  kable(format = "pandoc", 
+        caption = "Top 5 countries with the greatest population growth")
+```
+
+Aha, we found them. They were China and India 
+
+# Write and read data to file 
+
+In the beginning of the assignment I wrote `dataExcerpt` into `gapminder_excerpt.txt`. Now let's try to see how well we can read from the text file we  created. 
+```{r}
+gapExcerpt <-  read.delim(file = "gapminder_excerpt.txt")
+
+str(gapExcerpt)
+# file read from the file we wrote to 
+
+str(dataExcerpt)
+#our original data read from URL
+```
+Hum.... `str(gapExcerpt)` is a little massier than the result of `str(dataExcerpt)`. 
+
+```{r}
+identical(dataExcerpt, gapExcerpt)
+```
+So the data is not exactly the same after we save it and read it again. To see how they are organized: 
+
+```{r, results='asis'}
+dataExcerpt %>%
+  head %>%
+  kable(format = "pandoc", 
+        caption = "Data read from URL")
+
+gapExcerpt %>%
+  head %>%
+  kable(format = "pandoc", 
+        caption = "Data read from file gapminder_excerpt.txt ")
+
+```
+
+As we can see `gapExcerpt` is not properly delimited. I assume that somewhere in reading the file, the factors were not preserved properly. So one approach would be to add some arguments. 
+```{r, results='asis'}
+gapExcerpt_delim <- read.delim(file = "gapminder_excerpt.txt", 
+                               header = TRUE, sep = " ") 
+
+gapExcerpt_delim %>%
+  head %>%
+  kable(format = "pandoc", 
+        caption = "Data read from file gapminder_excerpt.txt ")
+```
+
+Looks much better! 
+
+# thoughts and progress
+I spent a lot of time thinking about `rearrange()` and `arrange()` functions. Those names make me intuitively think that they would do something to the data, which will reflect on how the tables are shown. But no, so that was a bit confusing at first. 
+
+This assignment was a lot less open ended, which allowed me to work on it non-stop (and it felt great!). I had to make several references to my older assignments to remember how to use ggplot2, so it was good that I documented those things well. The workflow/outline of the assignment guideline lead me to learn many new things and use the things we covered in class in practice, such as setting arguments in read.table, droplevels, ordering factors, and mapvalues, etc. 
+
+I also get to experiment with many things, such adding more argument to kable. Overall, I enjoyed the intense mental concentration I experienced during the working of this assignment. 
