@@ -76,7 +76,7 @@ Yes, so Oceania is no longer included in our data set `dataExcerpt2`. The number
 Let's look at the slopes of the life expectancy over years for each country. Using `~country + continent` we basically do this for every single country while retaining their continent identity (let me know if I can describe this better). 
 
 ```{r, results="asis"}
-j_coefs <- ddply(dataExcerpt, ~ country + continent, function(dat, offset = 1952) {
+j_coefs <- ddply(dataExcerpt2, ~ country+continent, function(dat, offset = 1952) {
   the_fit <- lm(lifeExp ~ I(year - offset), dat)
   setNames(coef(the_fit), c("intercept", "slope"))
 }) #this chunk was copied from the homework outline  
@@ -88,4 +88,85 @@ Upon closer examination (with inline R code which you can't see unless you go to
 
 # Order of data vs order of factor levels 
 
+Let's examine the differences among `post_arrange`, `post_reorder`, and `post_both`. 
+```{r}
+# code chunk below was copied/pasted from the assignment outline 
+post_arrange <- j_coefs %>% arrange(slope)
+post_reorder <- j_coefs %>%
+  mutate(country = reorder(country, slope))
+post_both <- j_coefs %>%
+  mutate(country = reorder(country, slope)) %>%
+  arrange(country)
+```
+
+## Use table to check
+I am gonna first look at how each one is ordered. First, the original and followed by the three different tables.
+
+```{r, results="asis"}
+#see how j_coefs look 
+j_coefs %>% head() %>% kable(format = "pandoc", caption = "The original: j_coefs")
+#make a pretty table for post_arrange 
+post_arrange %>% head() %>% kable(format = "pandoc", caption = "post_arrange")
+#for other two as well: 
+post_reorder %>% head() %>% kable(format = "pandoc", caption = "post_reorder")
+post_both %>% head() %>% kable(format = "pandoc", caption = "post_both")
+```
+
+It looks like `post_arrange` and `post_both` are the same. Moreover, `post_reorder` looks the same to `j_coefs`, which is already ordered by country. Let's examine the end of the data just in case. 
+```{r, results="asis"}
+post_arrange %>% tail() %>% 
+  kable(format = "pandoc", caption = "post_arrange: tail")
+post_both %>% tail() %>% 
+  kable(format = "pandoc", caption = "post_both: tail")
+```
+
+##Use graphs to check
+They look the same, however, double checking more 
+
+```{r}
+ggplot(post_arrange, aes(x=slope, y=country)) + geom_point(size=3) +
+  ggtitle("post_arrange graph")
+ggplot(post_reorder, aes(x=slope, y=country)) + geom_point(size=3) +
+  ggtitle("post_reorder graph")
+ggplot(post_both, aes(x=slope, y=country)) + geom_point(size=3) +
+  ggtitle("post_both graph")
+```
+
+Now I finally understand!  For `post_arrange`, the table is simply organized by the values of slope. However, `post_reorder` has the part `country = reorder(country, slope)` which __order the country factor based on the slope__. The categorical variable, country, has its levels reordered based on the values of a second variable, slope. In the case of `post_both` the same factor arrangement is made, and the table is arrange by slope. That's why the tables for `post_both` and `post_arrange` look the same, though the produce different plots because one has its country factor organized to the slope, the other one doesn't. 
+
+##the challenging questions
+___If I swap out `arrange(country)` for `arrange(slope)` in `post_both`, what would I get?___ This is basically asking what the result would be if we add `arrange(slope)` to the code for `post_reorder`. I think you won't change the results of the plot nor the table because the levels of country factor are already reorderd based on the slopes. Since the countries are arranged by slopes, they will again be arranged by slopes as well.  
+
+```{r, results="asis"}
+post_both2 <- j_coefs %>%
+  mutate(country = reorder(country, slope)) %>%
+  arrange(slope)
+post_both2 %>% head() %>% 
+  kable(format = "pandoc", caption = "post_both2: head")
+```
+And indeed that's what we see.  
+
+With this in mind, we can see that it'd make more sense to do `arrange()` first if we want to see real effects in the table, and then do `rearrange()` if we want to do certain modeling that requires certain factor levels to be ordered based on numeric variables. 
+
+# Revalue a factor 
+Hmmm...so let's add a new factor called "personality" to our data set. I will assign this to a subset of countries. 
+```{r}
+# get some of the countries
+countries  <- c("Germany", "Canada", "Japan")
+adjectives <- c("meticulous", "nice", "hard-working")
+dataExcerpt3  <- dataExcerpt2 %>%
+  filter(country %in% countries) %>%
+  droplevels 
+dataExcerpt3$country <- mapvalues(dataExcerpt3$country, countries, adjectives)
+
+```
+
+Now let's check if we have change the country factor levels
+```{r, results="asis"}
+str(dataExcerpt3)
+levels(dataExcerpt3$country)
+```
+Awesome! 
+
+# Reorder a factor 
 
