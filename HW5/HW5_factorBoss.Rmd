@@ -53,10 +53,18 @@ str(gapExcerpt)
 Hum.... a little massier than the result of `str(dataExcerpt)`. Let's come back to this later. 
 
 # Drop Oceania 
+Since there are only two countries in this "continent" category, I will remove it and use `droplevels()` to ensure the level is completely clean of Oceania.
 
 ```{r}
-
-
+# take everything except those whose continent is Oceania 
+dataExcerpt <- dataExcerpt %>%
+  filter(continent != "Oceania") %>%
+  droplevels
+# check if Oceania is dropped 
+dataExcerpt2$continent %>%
+  table()
 ```
+
+Yes, so Oceania is no longer included in our data set `dataExcerpt`. 
 
 
