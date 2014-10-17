@@ -1,0 +1,62 @@
+---
+title: "HW5: Be the boss of my factors"
+author: "Santina"
+date: "Thursday, October 16, 2014"
+output: 
+  html_document:
+    keep_md: true
+    toc: yes
+    toc_depth: 4 
+---
+
+# Introduction 
+In this assignment, we are going to see how to be in [control of factors](http://stat545-ubc.github.io/block014_factors.html) in a data set, using the provided [Gapminder excerpt](http://www.stat.ubc.ca/~jenny/notOcto/STAT545A/examples/gapminder/data/gapminderDataFiveYear.txt) as an example, and experiment with [reading and writing files](https://github.com/STAT545-UBC/STAT545-UBC.github.io/blob/master/cm011_files-out-in-script.r). 
+
+It will follow roughly (with perhaps some experimentations on the side) the assignment guideline. This is the last assignment of STAT545! I can't wait for the second half of the course, which will be even more exciting! 
+
+As always, let's get the gapminder data. Since it's from an URL, I am going to try to download it by reading it into R and saving it as a text file in my current directory. 
+
+## Notes to myself 
+Just some notes to remind me what I can use 
+- writing to and reading from files
+  * use `write.table()` and `read.delim()` or `read.table()`, make sure to experiment with different arguments 
+- writing and reading R objects
+  * RDS format: `saveRDS()`, `readRDS()`
+  * plain text format (often preferable):`dput()` and `dget()` 
+
+## same old stuff: packages and the gapminder data
+load some packages 
+```{r, message=FALSE}
+library(ggplot2) # for making plots
+library(ggthemes)# for customizaing ggplot graphs 
+library(scales)  # for graphs scale
+library(plyr)    # for easy computation with data frames
+library(dplyr)   # do this after loading plyr
+library(knitr)   # for rendering pretty tables
+```
+
+Loading our gapminder data 
+```{r}
+gpURL <- "http://www.stat.ubc.ca/~jenny/notOcto/STAT545A/examples/gapminder/data/gapminderDataFiveYear.txt"
+dataExcerpt <- read.delim(file = gpURL) 
+str(dataExcerpt)
+#saving it as "gapminder_excerpt.txt" in my current homework directory
+write.table(dataExcerpt, "gapminder_excerpt.txt") 
+```
+
+Let's try to see how well we can read from the text file we just created. 
+```{r}
+gapExcerpt <-  read.delim(file = "gapminder_excerpt.txt")
+str(gapExcerpt)
+
+```
+Hum.... a little massier than the result of `str(dataExcerpt)`. Let's come back to this later. 
+
+# Drop Oceania 
+
+```{r}
+
+
+```
+
+

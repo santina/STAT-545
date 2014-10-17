@@ -12,9 +12,15 @@ data <- read.delim(file = gdURL)
 countries  <- c("Croatia", "Canada", "Iran", "Haiti", "Brazil")
 data_sub  <- data %>%
   filter(country %in% countries) %>%
-  droplevels
+  droplevels 
+#you can verify the difference the last line make using levels(data_sub$country)
+# or table(data_sub$country)
+# with droplevels : levels(data_sub$country) : the five countries in alphabetic order
+# without: all the countries still there 
 
-# dorplevels(subset(data, country %in% countries))
+
+# droplevels(subset(data, country %in% countries))
+# same output for both with or without droplevels 
 data_sub %>%
   dim
 
@@ -31,7 +37,7 @@ write.table(data_sub, "data_sub.csv", sep=",", row.names = FALSE, quote = FALSE)
 
 
 #inspect the levels of country : 
-order_data  <- factor(data_sub, levels = data_sub$country, ordered = TRUE)
+# order_data  <- factor(data_sub, levels = data_sub$country, ordered = TRUE)
 
 ordered  <- data_sub %>%
   mutate(country=reorder(country, lifeExp, max))
