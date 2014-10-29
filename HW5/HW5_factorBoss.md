@@ -28,6 +28,7 @@ library(plyr)       # for easy computation with data frames
 library(dplyr)      # do this after loading plyr
 library(knitr)      # for rendering pretty tables
 library(robustbase) # for linear robust regression 
+library(pander)
 ```
 
 Loading our gapminder data 
@@ -368,9 +369,9 @@ pop_continent
 ```
 ##   continent intercept  slope
 ## 1    Africa   2859730  66156
-## 2    Europe   6216863  18267
+## 2    Europe   6216866  18267
 ## 3  Americas   3828268  62207
-## 4      Asia   9191601 146242
+## 4      Asia   9191603 146242
 ```
 
 We see that Asia probably has the greatest growth rate per year based on the slope, whereas Europe has the smallest growth rate. 

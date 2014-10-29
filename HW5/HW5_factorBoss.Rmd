@@ -34,6 +34,7 @@ library(plyr)       # for easy computation with data frames
 library(dplyr)      # do this after loading plyr
 library(knitr)      # for rendering pretty tables
 library(robustbase) # for linear robust regression 
+library(pander)
 ```
 
 Loading our gapminder data 
