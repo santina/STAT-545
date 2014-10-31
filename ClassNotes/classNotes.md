@@ -97,3 +97,39 @@ output: html_document
 - simplify your graph 
 - don't use pie chart (people can't perceive area and angle well)
 - use label, not legend, and make their color match 
+
+-------
+#Monday Oct 20 
+
+- talked about [colors in R](http://stat545-ubc.github.io/block018_colors.html) 
+  * library(RColorBrewer)
+  * display.brewer.all()
+  * use `par` to set default and restore it back 
+  * color palette: HCL 
+  * consider what you want to emphasize, the levels of extremes, etc 
+- Tidying data 
+  * use `gather()`, inside argument `key = ` and `value = ` 
+  * library(tidyr), package that is for data reshaping 
+  
+------ 
+# Wednesday Oct 23 
+- finished [tidying data](http://stat545-ubc.github.io/bit002_tidying-lotr-data.html)
+- free play 
+
+------
+
+# Monday Oct 27 
+- [Regular expression](http://stat545-ubc.github.io/block022_regular-expression.html)
+
+------
+
+# Wednesday Oct 29
+- finished [Regular Expression](http://stat545-ubc.github.io/block022_regular-expression.html)
+  * I need to actually go through this. kind of lost 
+- presentation on good data
+- [cleaning data](http://www.slideshare.net/jenniferbryan5811/excel-readwritedelimfiles) 
+  * gdata:: read.xls()  to access excel file directl from R 
+  * save every intermediate files.. .preferably in text.
+  
+- google " biologists this is why bioinformaticians hate you"
+
