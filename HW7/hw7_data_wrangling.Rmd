@@ -1,0 +1,304 @@
+---
+title: "HW7: Data wrangling Grand Finale"
+author: "Santina"
+date: "Thursday, October 30, 2014"
+output: 
+  html_document:
+    keep_md: true
+    toc: yes
+    toc_depth: 4 
+---
+# Intro 
+
+So in this assignment we're going to "wrangle" data, i.e., using new methods  or combining with new methods such as `dplyr`, `plyr`, `tidyr`, `reshape2`. 
+
+First, load some packages 
+```{r, message=FALSE}
+library(ggplot2)    # for making plots
+library(ggthemes)   # for customizaing ggplot graphs 
+library(scales)     # for graphs scale
+library(plyr)       # for easy computation with data frames
+library(dplyr)      # do this after loading plyr
+library(knitr)      # for rendering pretty tables
+library(grid)
+library(gridExtra)  # arranging graph
+library(reshape2)
+```
+
+Then read in some data: 
+```{r}
+# our old gapminder country data: 
+gdURL <- "http://tiny.cc/gapminder"
+gapminder <- read.delim(file = gdURL) 
+
+```
+
+# Join, Merge, Look up 
+For this part of the exercise, I looked at this [join cheatsheet](http://stat545-ubc.github.io/bit001_dplyr-cheatsheet.html) for ideas on how to join two data sets together to form a table.  
+
+So for the exercise I'm going to merge our old gapminder data with [land area by country] (http://data.worldbank.org/indicator/AG.LND.TOTL.K2) from the world bank. 
+
+I'm taking a minute to remind myself how to read csv: 
+
+```{r}
+land_mass  <- read.csv("land_area_country_year.csv", skip = 2, header = TRUE)
+head(land_mass,1)
+
+```
+So we can see that this data frame has country for each row, and land mass in km^2 by year. Also, land mass probably doesn't change much with time. Just in case though, I will take the land mass of each country in one particular year, and try to match to GDP per capita per country in gapminder data. The aim is to see how GDP per capita relates to the landmass of a country. Does landmass contributes to more national wealth production? Does smaller countries have more GDP per capita or faster growth in wealth? This idea arises because I have seen places like Hong Kong and Taiwan, which are tiny, having large growth in GDP per capita. 
+
+What about population? Does population depends heavily on the landmass? If we can put landmass and population together, we can easily calculate population density too! Wow, generating data from data. 
+
+The latest year in gapminder is `r max(gapminder$year)`. So I will subset `land_mass` to just that year and subset gapminder to just `country` and `gdpPercap`. 
+
+```{r}
+colnames(land_mass) 
+colnames(gapminder)
+```
+
+Before subsetting and merging, we need to make sure the column names for the countries names.   
+```{r}
+# get index for "Country_Name" in the array of colnames
+index  <- grep("Country_Name", colnames(land_mass))
+# change the name to "country"
+colnames(land_mass)[index] <- "country"
+```
+
+## Playing with joins 
+Now let's try
+```{r, results='asis'}
+joinInner <- inner_join(
+  gapminder[gapminder$year==2007, c("country", "gdpPercap", "pop")], 
+  land_mass[, c("country", "X2007")])
+
+kable(head(joinInner))
+nrow(joinInner) 
+nrow(gapminder[gapminder$year==2007,])
+```
+
+Finally! `inner_join` basically joins the data such that th first argument, our gapminder data, is the main character. The countries which have data inside `land_mass` are return. We can see that, not every country is returned by `inner_join`, because information about their landmass in that particular year doesn't exist in `land_mass`. 
+
+To see what those missing countries are, we can use `anti_join`: 
+
+```{r, results='asis'}
+antiJoin <- anti_join(
+  gapminder[gapminder$year==2007, c("country", "gdpPercap", "pop")], 
+  land_mass[, c("country", "X2007")])
+
+kable(antiJoin)
+nrow(antiJoin)
+```
+
+## Population Density
+
+Now let's calculate density 
+
+```{r, results='asis'}
+joinInner <- mutate(joinInner, density = pop/X2007)
+
+kable(head(joinInner))
+```
+
+
+## Relationship between variables
+And then we can look at relationships between density and gdpPercap, population and landmass, etc. 
+
+```{r}
+
+landmass_GDP  <- 
+  ggplot(joinInner, aes(x=X2007, y=gdpPercap)) + geom_point(size=3) +
+  ggtitle("landmass vs GDP")
+
+
+landmass_pop <- 
+  ggplot(joinInner, aes(x=X2007, y=pop)) + geom_point(size=3) +
+  ggtitle("landmass vs Population")
+
+density_GDP <- 
+  ggplot(joinInner, aes(x=density, y=gdpPercap)) + geom_point(size=3) +
+  ggtitle("landmass vs Population")
+
+grid.arrange(landmass_GDP, landmass_pop, density_GDP, ncol=3)
+```
+
+Hum, turn out that there aren't much relationship between each pair. But I guess that's part of data analysis. 
+
+#Data aggregation based on lists and arrays 
+
+So in this part of activity, I am going to explore various methods that have make for loop in R almost unnecessary. Namely, those `apply` methods in plyr package. Here's the [summary of the methods](http://www.slideshare.net/jenniferbryan5811/cm009-data-aggregation) that I should read first. It's very useful, I can't believe I never realize that a method name, such as `ddply` means putting a dataframe in and getting a dataframe out. Now I won't get them confused anymore. 
+
+## dlply()
+First, let's look at life expectancy by countries, as suggested in activity 1, and put into each linear model into a list: 
+```{r}
+linear_models <- dlply(gapminder, ~ country, function(data, offset = 1952) {
+  the_fit <- lm(lifeExp ~ I(year - offset), data)
+  setNames(coef(the_fit), c("intercept", "slope"))
+}) #this chunk was copied from the homework5 and modified
+
+class(linear_models)
+head(linear_models)
+length(linear_models)
+```
+
+We can see that now that the linear model for each country is now in a list, and there are `r length(linear_models)` elements in the list because there are that many countries in gapminder. 
+
+## ldply() 
+
+We are going to pull things from the list `linear_models`. The output would be a data.frame. 
+
+Pulling out the estimated coefficients so that output is a data.frame with one row per country: 
+
+```{r, results='asis'}
+country_models  <- ldply(linear_models, function(data){
+  data
+})
+class(country_models) 
+# wow so easy
+kable(head(country_models))
+```
+
+Now we will pull out the information and return a dataframe such that there are two rows per country, with one row for intercept and one for slope. 
+
+```{r, results='asis', results ='hide', message=FALSE}
+country_models_compact  <- melt(country_models)
+  # Using country as id variables
+arrange(country_models_compact, country)
+```
+
+```{r}
+class(country_models_compact)
+head(country_models_compact)
+```
+By using melt, we make the data frame we got earlier to consist of three columns, one for variables, and one for type of variables, and one for country. 
+
+Now we want to output a dataframe in which there are `r unique(gapminder$year)` rows for each country (i.e. all years) and have lifeExp, fitted and residual value for each of those years. 
+
+```{r}
+linear_models_info <- ddply(gapminder, ~ country, function(data, offset = 1952) {
+  data <- data %>% group_by(year)
+  the_fit <- lm(lifeExp ~ I(year - offset), data)
+  setNames(the_fit$residuals, "residual")
+  setNames(c(the_fit$residuals, the_fit$fitted,data$lifeExp),  c("resid","fitted", "lifeExp" ))
+  #setNames(the_fit$fitted, "fitted")
+  #setNames(data$lifeExp, "lifeExp")
+  
+}) 
+head(linear_models_info)
+```
+
+I spent quite a long time on this part and still can't figure out how to include the information about year in the dataframe. So far, it produces a data frame in which the last 12 columns are year (without label). I will come back to this, and would appreciate any insight. 
+
+## Activity 2 
+This part is about cutting and gluing back the data toghther. First we will chop the data by countries and write them to separate text files. 
+
+```{r}
+country_writing  <- ddply(gapminder, ~ country, function(data){
+  country_data  <- data %>%
+    filter(country == country) %>%
+    droplevels() # drop country levels that aren't the country of interest
+  
+# first need to create the folder "countrylist"
+write.table(country_data, 
+            file = paste0("countrylist/", 
+                          levels(country_data$country), 
+                          ".tsv"), 
+            sep = ",", row.names = FALSE)
+})
+```
+
+Some verification if this was successful: 
+
+```{r}
+head(list.files("countrylist"))
+a_country  <- read.delim(file=paste0("countrylist/", list.files("countrylist")[1]))
+head(a_country)
+class(a_country)
+```
+So that was successful! 
+
+```{r}
+files  <- list.files("countrylist",  full.names = TRUE)
+bigFile  <- adply(files, .margin = 1, function(data){
+  read.delim(file = data) 
+})
+
+head(bigFile)
+```
+So that was successful! Notice that we need `full.names = TRUE` because our current directory is one level above the `countrylist` folder. 
+
+Now let's try getting the number of rows from each file, using aaply so that we get a list of number of rows. 
+```{r}
+infoList  <- aaply(files, .margin = 1, function(data){
+  file  <- read.delim(file = data, header = TRUE, sep = ",")
+  nrows  <- nrow(file)
+  #names(nrows)  <-  levels(file$country)
+})
+head(infoList)
+```
+
+The array shows that each file has 12 rows, but we don't know which country it is because each element is simply indexed. I tried naming the element inside this aaply without success. I guess it's because each element inside aaply is still a element, not an array. So I can't do it that way. 
+
+I can't think of a smarter way to do this, so I will use aaply again to get an array of country names, and assign that to `infoList`. 
+
+```{r}
+country_names <- aaply(files, .margin = 1, function(data){
+  file  <- read.delim(file = data, header = TRUE, sep = ",")  
+  levels(file$country)
+})
+names(infoList)  <- country_names 
+head(infoList)
+```
+Now that works! 
+
+Now we are going to try reading each files back and fit a linear model of life expectancy against time. We can use `alply` for this purpose. 
+
+```{r}
+lifeExpList <- alply(files, .margin = 1, function(data, offset = 1952){
+  file  <- read.delim(file = data, header = TRUE, sep = ",")  
+  the_fit <- lm(file$lifeExp ~ I(file$year - offset), file)
+  setNames(coef(the_fit), c("intercept", "slope"))
+})
+
+head(lifeExpList)
+names(lifeExpList)  <- country_names
+head(lifeExpList)
+
+```
+
+Yay we did it. Notice that we set the names of the list again. The procedures here are similar to how we get a table of linear model for each country with `ddply`, with just some minor differences. Since we're reading each file in a file list, instead of reading gapminder by country chunk, so we specify which lifeExp and which year the data is coming from. 
+
+Now we will try to graph life expectancy over year for each country, and we will store the graph as a `jpg` into the `countrylist` folder. 
+
+```{r}
+lifeExpList <- a_ply(files, .margin = 1, function(data){
+  file  <- read.delim(file = data, header = TRUE, sep = ",")  
+  
+  #set up important names
+  file_name  <- paste0("countrylist/",levels(file$country),".jpg")
+  graph_title <- paste0(levels(file$country), ": life expectancy over year")
+  
+
+  #jpeg(file_name)
+  graph <- ggplot(file, aes(x=year, y=lifeExp)) + geom_point(size=3) +
+  ggtitle(graph_title)
+
+  dev.copy(jpeg,filename=file_name)
+  dev.off()
+  
+})
+```
+
+Now let's check if files are there. 
+
+```{r}
+files  <- list.files("countrylist", full.name = TRUE)
+jpg_files <-  grep("jpg$", files, value = TRUE) 
+head(jpg_files)
+```
+
+Yay there are there! 
+
+# reflection 
+
+I think the plyr part was the most difficult. I often couldn't wrap my head around not using for loop and having a function magically produce a list/array/dataframe of things for me. Still, I have gotten a hang of how to do this, and thought it's really cool that you can create files on the fly like this. I wish I know R earlier... I couldn't have automate analyzing a large set of data like this!  I'm also really glad I get to pull my knowledge, old and new, together in this assignment, such as using `paste0()` to make unique file names and regular expression to read specific set of files.
+
