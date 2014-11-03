@@ -95,7 +95,8 @@ library(scales)     # for graphs scale
 library(plyr)       # for easy computation with data frames
 library(dplyr)      # do this after loading plyr
 library(knitr)      # for rendering pretty tables
-library(robustbase) # for linear robust regression </code></pre>
+library(robustbase) # for linear robust regression 
+library(pander)</code></pre>
 <p>Loading our gapminder data</p>
 <pre class="r"><code>gpURL &lt;- &quot;http://www.stat.ubc.ca/~jenny/notOcto/STAT545A/examples/gapminder/data/gapminderDataFiveYear.txt&quot;
 dataExcerpt &lt;- read.delim(file = gpURL) 
@@ -205,208 +206,20 @@ post_both &lt;- j_coefs %&gt;%
 <h2>Use table to check</h2>
 <p>I am gonna first look at how each one is ordered. First, the original and followed by the three different tables.</p>
 <pre class="r"><code>#see how j_coefs look 
-j_coefs %&gt;% head() %&gt;% kable(format = &quot;pandoc&quot;, caption = &quot;The original: j_coefs&quot;)</code></pre>
-<table>
-<caption>The original: j_coefs</caption>
-<thead>
-<tr class="header">
-<th align="left">country</th>
-<th align="left">continent</th>
-<th align="right">intercept</th>
-<th align="right">slope</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">Afghanistan</td>
-<td align="left">Asia</td>
-<td align="right">29.91</td>
-<td align="right">0.2753</td>
-</tr>
-<tr class="even">
-<td align="left">Albania</td>
-<td align="left">Europe</td>
-<td align="right">59.23</td>
-<td align="right">0.3347</td>
-</tr>
-<tr class="odd">
-<td align="left">Algeria</td>
-<td align="left">Africa</td>
-<td align="right">43.38</td>
-<td align="right">0.5693</td>
-</tr>
-<tr class="even">
-<td align="left">Angola</td>
-<td align="left">Africa</td>
-<td align="right">32.13</td>
-<td align="right">0.2093</td>
-</tr>
-<tr class="odd">
-<td align="left">Argentina</td>
-<td align="left">Americas</td>
-<td align="right">62.69</td>
-<td align="right">0.2317</td>
-</tr>
-<tr class="even">
-<td align="left">Austria</td>
-<td align="left">Europe</td>
-<td align="right">66.45</td>
-<td align="right">0.2420</td>
-</tr>
-</tbody>
-</table>
+j_coefs %&gt;% head() %&gt;% kable(format = &quot;latex&quot;, caption = &quot;The original: j_coefs&quot;)</code></pre>
+
+
 <pre class="r"><code>#make a pretty table for post_arrange 
-post_arrange %&gt;% head() %&gt;% kable(format = &quot;pandoc&quot;, caption = &quot;post_arrange&quot;)</code></pre>
-<table>
-<caption>post_arrange</caption>
-<thead>
-<tr class="header">
-<th align="left">country</th>
-<th align="left">continent</th>
-<th align="right">intercept</th>
-<th align="right">slope</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">Zimbabwe</td>
-<td align="left">Africa</td>
-<td align="right">55.22</td>
-<td align="right">-0.0930</td>
-</tr>
-<tr class="even">
-<td align="left">Zambia</td>
-<td align="left">Africa</td>
-<td align="right">47.66</td>
-<td align="right">-0.0604</td>
-</tr>
-<tr class="odd">
-<td align="left">Rwanda</td>
-<td align="left">Africa</td>
-<td align="right">42.74</td>
-<td align="right">-0.0458</td>
-</tr>
-<tr class="even">
-<td align="left">Botswana</td>
-<td align="left">Africa</td>
-<td align="right">52.93</td>
-<td align="right">0.0607</td>
-</tr>
-<tr class="odd">
-<td align="left">Congo, Dem. Rep.</td>
-<td align="left">Africa</td>
-<td align="right">41.96</td>
-<td align="right">0.0939</td>
-</tr>
-<tr class="even">
-<td align="left">Swaziland</td>
-<td align="left">Africa</td>
-<td align="right">46.39</td>
-<td align="right">0.0951</td>
-</tr>
-</tbody>
-</table>
+post_arrange %&gt;% head() %&gt;% kable(format = &quot;latex&quot;, caption = &quot;post_arrange&quot;)</code></pre>
+
+
 <pre class="r"><code>#for other two as well: 
-post_reorder %&gt;% head() %&gt;% kable(format = &quot;pandoc&quot;, caption = &quot;post_reorder&quot;)</code></pre>
-<table>
-<caption>post_reorder</caption>
-<thead>
-<tr class="header">
-<th align="left">country</th>
-<th align="left">continent</th>
-<th align="right">intercept</th>
-<th align="right">slope</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">Afghanistan</td>
-<td align="left">Asia</td>
-<td align="right">29.91</td>
-<td align="right">0.2753</td>
-</tr>
-<tr class="even">
-<td align="left">Albania</td>
-<td align="left">Europe</td>
-<td align="right">59.23</td>
-<td align="right">0.3347</td>
-</tr>
-<tr class="odd">
-<td align="left">Algeria</td>
-<td align="left">Africa</td>
-<td align="right">43.38</td>
-<td align="right">0.5693</td>
-</tr>
-<tr class="even">
-<td align="left">Angola</td>
-<td align="left">Africa</td>
-<td align="right">32.13</td>
-<td align="right">0.2093</td>
-</tr>
-<tr class="odd">
-<td align="left">Argentina</td>
-<td align="left">Americas</td>
-<td align="right">62.69</td>
-<td align="right">0.2317</td>
-</tr>
-<tr class="even">
-<td align="left">Austria</td>
-<td align="left">Europe</td>
-<td align="right">66.45</td>
-<td align="right">0.2420</td>
-</tr>
-</tbody>
-</table>
-<pre class="r"><code>post_both %&gt;% head() %&gt;% kable(format = &quot;pandoc&quot;, caption = &quot;post_both&quot;)</code></pre>
-<table>
-<caption>post_both</caption>
-<thead>
-<tr class="header">
-<th align="left">country</th>
-<th align="left">continent</th>
-<th align="right">intercept</th>
-<th align="right">slope</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left">Zimbabwe</td>
-<td align="left">Africa</td>
-<td align="right">55.22</td>
-<td align="right">-0.0930</td>
-</tr>
-<tr class="even">
-<td align="left">Zambia</td>
-<td align="left">Africa</td>
-<td align="right">47.66</td>
-<td align="right">-0.0604</td>
-</tr>
-<tr class="odd">
-<td align="left">Rwanda</td>
-<td align="left">Africa</td>
-<td align="right">42.74</td>
-<td align="right">-0.0458</td>
-</tr>
-<tr class="even">
-<td align="left">Botswana</td>
-<td align="left">Africa</td>
-<td align="right">52.93</td>
-<td align="right">0.0607</td>
-</tr>
-<tr class="odd">
-<td align="left">Congo, Dem. Rep.</td>
-<td align="left">Africa</td>
-<td align="right">41.96</td>
-<td align="right">0.0939</td>
-</tr>
-<tr class="even">
-<td align="left">Swaziland</td>
-<td align="left">Africa</td>
-<td align="right">46.39</td>
-<td align="right">0.0951</td>
-</tr>
-</tbody>
-</table>
+post_reorder %&gt;% head() %&gt;% kable(format = &quot;latex&quot;, caption = &quot;post_reorder&quot;)</code></pre>
+
+
+<pre class="r"><code>post_both %&gt;% head() %&gt;% kable(format = &quot;latex&quot;, caption = &quot;post_both&quot;)</code></pre>
+
+
 <p>It looks like <code>post_arrange</code> and <code>post_both</code> are the same. Moreover, <code>post_reorder</code> looks the same to <code>j_coefs</code>, which is already ordered by country. Let’s examine the end of the data just in case.</p>
 <pre class="r"><code>post_arrange %&gt;% tail() %&gt;% 
   kable(format = &quot;pandoc&quot;, caption = &quot;post_arrange: tail&quot;)</code></pre>
@@ -647,7 +460,7 @@ pop_continent  &lt;- ddply(pop_ordered, ~continent, pop_linearRob_coefs)
 pop_continent</code></pre>
 <pre><code>##   continent intercept  slope
 ## 1    Africa   2859730  66156
-## 2    Europe   6216863  18267
+## 2    Europe   6216872  18267
 ## 3  Americas   3828268  62207
 ## 4      Asia   9191601 146242</code></pre>
 <p>We see that Asia probably has the greatest growth rate per year based on the slope, whereas Europe has the smallest growth rate.</p>

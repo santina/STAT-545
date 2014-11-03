@@ -138,74 +138,102 @@ I am gonna first look at how each one is ordered. First, the original and follow
 
 ```r
 #see how j_coefs look 
-j_coefs %>% head() %>% kable(format = "pandoc", caption = "The original: j_coefs")
+j_coefs %>% head() %>% kable(format = "latex", caption = "The original: j_coefs")
 ```
 
 
-
-Table: The original: j_coefs
-
-country       continent    intercept    slope
-------------  ----------  ----------  -------
-Afghanistan   Asia             29.91   0.2753
-Albania       Europe           59.23   0.3347
-Algeria       Africa           43.38   0.5693
-Angola        Africa           32.13   0.2093
-Argentina     Americas         62.69   0.2317
-Austria       Europe           66.45   0.2420
+\caption{The original: j_coefs}
+\begin{tabular}{l|l|r|r}
+\hline
+country & continent & intercept & slope\\
+\hline
+Afghanistan & Asia & 29.91 & 0.2753\\
+\hline
+Albania & Europe & 59.23 & 0.3347\\
+\hline
+Algeria & Africa & 43.38 & 0.5693\\
+\hline
+Angola & Africa & 32.13 & 0.2093\\
+\hline
+Argentina & Americas & 62.69 & 0.2317\\
+\hline
+Austria & Europe & 66.45 & 0.2420\\
+\hline
+\end{tabular}
 
 ```r
 #make a pretty table for post_arrange 
-post_arrange %>% head() %>% kable(format = "pandoc", caption = "post_arrange")
+post_arrange %>% head() %>% kable(format = "latex", caption = "post_arrange")
 ```
 
 
-
-Table: post_arrange
-
-country            continent    intercept     slope
------------------  ----------  ----------  --------
-Zimbabwe           Africa           55.22   -0.0930
-Zambia             Africa           47.66   -0.0604
-Rwanda             Africa           42.74   -0.0458
-Botswana           Africa           52.93    0.0607
-Congo, Dem. Rep.   Africa           41.96    0.0939
-Swaziland          Africa           46.39    0.0951
+\caption{post_arrange}
+\begin{tabular}{l|l|r|r}
+\hline
+country & continent & intercept & slope\\
+\hline
+Zimbabwe & Africa & 55.22 & -0.0930\\
+\hline
+Zambia & Africa & 47.66 & -0.0604\\
+\hline
+Rwanda & Africa & 42.74 & -0.0458\\
+\hline
+Botswana & Africa & 52.93 & 0.0607\\
+\hline
+Congo, Dem. Rep. & Africa & 41.96 & 0.0939\\
+\hline
+Swaziland & Africa & 46.39 & 0.0951\\
+\hline
+\end{tabular}
 
 ```r
 #for other two as well: 
-post_reorder %>% head() %>% kable(format = "pandoc", caption = "post_reorder")
+post_reorder %>% head() %>% kable(format = "latex", caption = "post_reorder")
 ```
 
 
-
-Table: post_reorder
-
-country       continent    intercept    slope
-------------  ----------  ----------  -------
-Afghanistan   Asia             29.91   0.2753
-Albania       Europe           59.23   0.3347
-Algeria       Africa           43.38   0.5693
-Angola        Africa           32.13   0.2093
-Argentina     Americas         62.69   0.2317
-Austria       Europe           66.45   0.2420
+\caption{post_reorder}
+\begin{tabular}{l|l|r|r}
+\hline
+country & continent & intercept & slope\\
+\hline
+Afghanistan & Asia & 29.91 & 0.2753\\
+\hline
+Albania & Europe & 59.23 & 0.3347\\
+\hline
+Algeria & Africa & 43.38 & 0.5693\\
+\hline
+Angola & Africa & 32.13 & 0.2093\\
+\hline
+Argentina & Americas & 62.69 & 0.2317\\
+\hline
+Austria & Europe & 66.45 & 0.2420\\
+\hline
+\end{tabular}
 
 ```r
-post_both %>% head() %>% kable(format = "pandoc", caption = "post_both")
+post_both %>% head() %>% kable(format = "latex", caption = "post_both")
 ```
 
 
-
-Table: post_both
-
-country            continent    intercept     slope
------------------  ----------  ----------  --------
-Zimbabwe           Africa           55.22   -0.0930
-Zambia             Africa           47.66   -0.0604
-Rwanda             Africa           42.74   -0.0458
-Botswana           Africa           52.93    0.0607
-Congo, Dem. Rep.   Africa           41.96    0.0939
-Swaziland          Africa           46.39    0.0951
+\caption{post_both}
+\begin{tabular}{l|l|r|r}
+\hline
+country & continent & intercept & slope\\
+\hline
+Zimbabwe & Africa & 55.22 & -0.0930\\
+\hline
+Zambia & Africa & 47.66 & -0.0604\\
+\hline
+Rwanda & Africa & 42.74 & -0.0458\\
+\hline
+Botswana & Africa & 52.93 & 0.0607\\
+\hline
+Congo, Dem. Rep. & Africa & 41.96 & 0.0939\\
+\hline
+Swaziland & Africa & 46.39 & 0.0951\\
+\hline
+\end{tabular}
 
 It looks like `post_arrange` and `post_both` are the same. Moreover, `post_reorder` looks the same to `j_coefs`, which is already ordered by country. Let's examine the end of the data just in case. 
 
@@ -369,9 +397,9 @@ pop_continent
 ```
 ##   continent intercept  slope
 ## 1    Africa   2859730  66156
-## 2    Europe   6216866  18267
+## 2    Europe   6216872  18267
 ## 3  Americas   3828268  62207
-## 4      Asia   9191603 146242
+## 4      Asia   9191601 146242
 ```
 
 We see that Asia probably has the greatest growth rate per year based on the slope, whereas Europe has the smallest growth rate. 
