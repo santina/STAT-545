@@ -133,3 +133,15 @@ output: html_document
   
 - google " biologists this is why bioinformaticians hate you"
 
+------
+
+# Monday Nov 3 
+
+- Automation
+  * R, shell and R script, make 
+- pipeline 
+  * take a monolithic script into logical components 
+  * important : each stage never modify its input 
+- some symbols
+  * $<  imput file
+  * $@ output 
