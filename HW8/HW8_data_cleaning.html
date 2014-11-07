@@ -62,6 +62,11 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <li><a href="#load-the-dirty-gapminder-data">load the dirty gapminder data</a><ul>
 <li><a href="#strip.white-argument">strip.white argument</a></li>
 </ul></li>
+<li><a href="#splitting-and-merging">Splitting and merging</a></li>
+<li><a href="#missing-values">Missing values</a></li>
+<li><a href="#capitalization">Capitalization</a></li>
+<li><a href="#final-check">(Final) check</a></li>
+<li><a href="#grand-final-check">Grand final check</a></li>
 </ul>
 </div>
 
@@ -199,7 +204,388 @@ kable(head(dirty_file2))</code></pre>
 <pre class="r"><code>str(dirty_file2)</code></pre>
 <p>‘data.frame’: 1704 obs. of 5 variables: $ year : int 1952 1957 1962 1967 1972 1977 1982 1987 1992 1997 … $ pop : num 8425333 9240934 10267083 11537966 13079460 … $ lifeExp : num 28.8 30.3 32 34 36.1 … $ gdpPercap: num 779 821 853 836 740 … $ region : Factor w/ 148 levels “<em>Canada“,”Africa</em>Algeria”,..: 83 83 83 83 83 83 83 83 83 83 …</p>
 <p>I don’t see much difference, exacept that the number of region factor levels has changed. With <code>strip.white = FALSE</code> by default , it’s 151, and now it’s 148. Let’s examine it closer:</p>
+<pre class="r"><code>head(levels(dirty_file$region))</code></pre>
+<pre><code>## [1] &quot;    Asia_Jordan&quot;           &quot;    Asia_Korea, Dem. Rep.&quot;
+## [3] &quot;_Canada&quot;                   &quot;Africa_Algeria&quot;           
+## [5] &quot;Africa_Angola&quot;             &quot;Africa_Benin&quot;</code></pre>
+<pre class="r"><code>head(levels(dirty_file2$region))</code></pre>
+<pre><code>## [1] &quot;_Canada&quot;             &quot;Africa_Algeria&quot;      &quot;Africa_Angola&quot;      
+## [4] &quot;Africa_Benin&quot;        &quot;Africa_Botswana&quot;     &quot;Africa_Burkina Faso&quot;</code></pre>
+<p>We can see that the first two have disappeared in <code>dirty_file2</code> ! And they have white spaces. So it looks like those are eliminated or stripped of their white space (likely the latter but why not just check).</p>
+<p>Let’s look at the factor levels with white space:</p>
+<pre class="r"><code>grep(&quot;^\\s.&quot;, dirty_file$region, value = TRUE) #spaces at the beginning</code></pre>
+<pre><code>## [1] &quot;    Asia_Jordan&quot;           &quot;    Asia_Korea, Dem. Rep.&quot;
+## [3] &quot;    Asia_Korea, Dem. Rep.&quot;</code></pre>
+<p>We can see that there are three of them, and that accounts for the difference between the number of factors in region between the two files!</p>
+<pre class="r"><code>head(levels(dirty_file$region))</code></pre>
+<pre><code>## [1] &quot;    Asia_Jordan&quot;           &quot;    Asia_Korea, Dem. Rep.&quot;
+## [3] &quot;_Canada&quot;                   &quot;Africa_Algeria&quot;           
+## [5] &quot;Africa_Angola&quot;             &quot;Africa_Benin&quot;</code></pre>
+<pre class="r"><code>head(levels(dirty_file2$region))</code></pre>
+<pre><code>## [1] &quot;_Canada&quot;             &quot;Africa_Algeria&quot;      &quot;Africa_Angola&quot;      
+## [4] &quot;Africa_Benin&quot;        &quot;Africa_Botswana&quot;     &quot;Africa_Burkina Faso&quot;</code></pre>
+<p>And indeed, once the white space are stripped out, they become identical to the other factors, thus reducing the factor levels. This is important because sometimes people put spaces when they input some values. Stripping off the space ensure that we are not counting those inputs as unique inputs.</p>
+<p>Knowing this we will know work with <code>dirty_file2</code></p>
 </div>
+</div>
+<div id="splitting-and-merging" class="section level1">
+<h1>Splitting and merging</h1>
+<p>We know that the column region contains both country name and continent name. So maybe we should split that into two columns.</p>
+<pre class="r"><code># first split the value of region into two conceptual names, do this for each row
+continent_country  &lt;- adply(as.character(dirty_file2$region), .margin = 1, function(data){
+  unlist(strsplit(data, &quot;_&quot;))
+})
+
+head(continent_country)</code></pre>
+<pre><code>##   X1   V1          V2
+## 1  1 Asia Afghanistan
+## 2  2 Asia Afghanistan
+## 3  3 Asia Afghanistan
+## 4  4 Asia Afghanistan
+## 5  5 Asia Afghanistan
+## 6  6 Asia Afghanistan</code></pre>
+<p>We have successfully separated the two pieces of information, now we need to glue it the original dataframe <code>dirty_file2</code>.</p>
+<pre class="r"><code># put the country in: 
+dirty_file2 &lt;- mutate(dirty_file2, country = continent_country$V2)
+# put the continent in 
+dirty_file2 &lt;- mutate(dirty_file2, continent = continent_country$V1)
+dirty_file2 %&gt;% head() %&gt;% kable()</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="right">year</th>
+<th align="right">pop</th>
+<th align="right">lifeExp</th>
+<th align="right">gdpPercap</th>
+<th align="left">region</th>
+<th align="left">country</th>
+<th align="left">continent</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">1952</td>
+<td align="right">8425333</td>
+<td align="right">28.80</td>
+<td align="right">779.4</td>
+<td align="left">Asia_Afghanistan</td>
+<td align="left">Afghanistan</td>
+<td align="left">Asia</td>
+</tr>
+<tr class="even">
+<td align="right">1957</td>
+<td align="right">9240934</td>
+<td align="right">30.33</td>
+<td align="right">820.9</td>
+<td align="left">Asia_Afghanistan</td>
+<td align="left">Afghanistan</td>
+<td align="left">Asia</td>
+</tr>
+<tr class="odd">
+<td align="right">1962</td>
+<td align="right">10267083</td>
+<td align="right">32.00</td>
+<td align="right">853.1</td>
+<td align="left">Asia_Afghanistan</td>
+<td align="left">Afghanistan</td>
+<td align="left">Asia</td>
+</tr>
+<tr class="even">
+<td align="right">1967</td>
+<td align="right">11537966</td>
+<td align="right">34.02</td>
+<td align="right">836.2</td>
+<td align="left">Asia_Afghanistan</td>
+<td align="left">Afghanistan</td>
+<td align="left">Asia</td>
+</tr>
+<tr class="odd">
+<td align="right">1972</td>
+<td align="right">13079460</td>
+<td align="right">36.09</td>
+<td align="right">740.0</td>
+<td align="left">Asia_Afghanistan</td>
+<td align="left">Afghanistan</td>
+<td align="left">Asia</td>
+</tr>
+<tr class="even">
+<td align="right">1977</td>
+<td align="right">14880372</td>
+<td align="right">38.44</td>
+<td align="right">786.1</td>
+<td align="left">Asia_Afghanistan</td>
+<td align="left">Afghanistan</td>
+<td align="left">Asia</td>
+</tr>
+</tbody>
+</table>
+<p>We successfully put those two columns in! Now we drop the region column because it’s no longer necessary.</p>
+<pre class="r"><code>keeps  &lt;- colnames(dirty_file)
+dirty_file2  &lt;- dirty_file2[, !colnames(dirty_file2) == &quot;region&quot;]
+head(dirty_file2) %&gt;%
+  kable()</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="right">year</th>
+<th align="right">pop</th>
+<th align="right">lifeExp</th>
+<th align="right">gdpPercap</th>
+<th align="left">country</th>
+<th align="left">continent</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">1952</td>
+<td align="right">8425333</td>
+<td align="right">28.80</td>
+<td align="right">779.4</td>
+<td align="left">Afghanistan</td>
+<td align="left">Asia</td>
+</tr>
+<tr class="even">
+<td align="right">1957</td>
+<td align="right">9240934</td>
+<td align="right">30.33</td>
+<td align="right">820.9</td>
+<td align="left">Afghanistan</td>
+<td align="left">Asia</td>
+</tr>
+<tr class="odd">
+<td align="right">1962</td>
+<td align="right">10267083</td>
+<td align="right">32.00</td>
+<td align="right">853.1</td>
+<td align="left">Afghanistan</td>
+<td align="left">Asia</td>
+</tr>
+<tr class="even">
+<td align="right">1967</td>
+<td align="right">11537966</td>
+<td align="right">34.02</td>
+<td align="right">836.2</td>
+<td align="left">Afghanistan</td>
+<td align="left">Asia</td>
+</tr>
+<tr class="odd">
+<td align="right">1972</td>
+<td align="right">13079460</td>
+<td align="right">36.09</td>
+<td align="right">740.0</td>
+<td align="left">Afghanistan</td>
+<td align="left">Asia</td>
+</tr>
+<tr class="even">
+<td align="right">1977</td>
+<td align="right">14880372</td>
+<td align="right">38.44</td>
+<td align="right">786.1</td>
+<td align="left">Afghanistan</td>
+<td align="left">Asia</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="missing-values" class="section level1">
+<h1>Missing values</h1>
+<p>Now we’re going to check if there are any <code>NA</code> values inside our most up-to-date data frame.</p>
+<pre class="r"><code>dirty_file[!complete.cases(dirty_file), ]</code></pre>
+<pre><code>## [1] year      pop       lifeExp   gdpPercap region   
+## &lt;0 rows&gt; (or 0-length row.names)</code></pre>
+<p>Hum… nothing shows up! Apparently all rows are complete. But from previous examination of our region column, I remember there was some with only “_Canada“, which means their continent value was missing. Let’s check</p>
+<pre class="r"><code>canada  &lt;- dirty_file2[dirty_file2$country == &quot;Canada&quot;, ]
+head(canada)</code></pre>
+<pre><code>##     year      pop lifeExp gdpPercap country continent
+## 241 1952 14785584   68.75     11367  Canada          
+## 242 1957 17010154   69.96     12490  Canada          
+## 243 1962 18985849   71.30     13462  Canada          
+## 244 1967 20819767   72.13     16077  Canada  Americas
+## 245 1972 22284500   72.88     18971  Canada  Americas
+## 246 1977 23796400   74.21     22091  Canada  Americas</code></pre>
+<pre class="r"><code>canada[!complete.cases(canada), ]</code></pre>
+<pre><code>## [1] year      pop       lifeExp   gdpPercap country   continent
+## &lt;0 rows&gt; (or 0-length row.names)</code></pre>
+<p>We can see that continent information are missing for some rows in <code>canada</code>, but they’re still regarded as complete.</p>
+<pre class="r"><code>unique(canada$continent)</code></pre>
+<pre><code>## [1] &quot;&quot;         &quot;Americas&quot;</code></pre>
+<p>And indeed, the empty string are not treated as <code>NA</code> value, so we need another way to search for them.</p>
+<pre class="r"><code>dirty_file2[dirty_file2$continent == &quot;&quot;, ]</code></pre>
+<pre><code>##     year      pop lifeExp gdpPercap country continent
+## 241 1952 14785584   68.75     11367  Canada          
+## 242 1957 17010154   69.96     12490  Canada          
+## 243 1962 18985849   71.30     13462  Canada</code></pre>
+<p>Only those three entries are missing. We’ll manually fill them now.</p>
+<pre class="r"><code>dirty_file2[241:243, ]$continent = &quot;America&quot;
+dirty_file2[241:243, ]</code></pre>
+<pre><code>##     year      pop lifeExp gdpPercap country continent
+## 241 1952 14785584   68.75     11367  Canada   America
+## 242 1957 17010154   69.96     12490  Canada   America
+## 243 1962 18985849   71.30     13462  Canada   America</code></pre>
+<p>Now we’ve done it!</p>
+</div>
+<div id="capitalization" class="section level1">
+<h1>Capitalization</h1>
+<p>According to the <a href="stat545-ubc.github.io/hw08_data-cleaning.html">assignment instruction</a>, there are some entries with inconsistent capitalization and lower cases, which probably have make the number of unique factors more than it should. So we’ll check that, first the country:</p>
+<pre class="r"><code>#country names should be capitalized, so let's search for lower case (first letter)
+grep(&quot;^\\b[a-z]&quot;, dirty_file2$country, value = TRUE)</code></pre>
+<pre><code>## [1] &quot;china&quot; &quot;china&quot; &quot;china&quot; &quot;china&quot;</code></pre>
+<pre class="r"><code># ^: beginning of the string </code></pre>
+<p>Hey, there are four country entries that are lower case <code>china</code>. We need to find where they are and replace them with <code>China</code>.</p>
+<pre class="r"><code>indices  &lt;- grep(&quot;^\\b[a-z]&quot;, dirty_file2$country)
+dirty_file2[indices, ]</code></pre>
+<pre><code>##     year       pop lifeExp gdpPercap country continent
+## 294 1977 9.435e+08   63.97     741.2   china      Asia
+## 295 1982 1.000e+09   65.53     962.4   china      Asia
+## 296 1987 1.084e+09   67.27    1378.9   china      Asia
+## 297 1992 1.165e+09   68.69    1655.8   china      Asia</code></pre>
+<pre class="r"><code>dirty_file2[indices, ]$country = &quot;China&quot;
+dirty_file2[indices, ] # now it's good </code></pre>
+<pre><code>##     year       pop lifeExp gdpPercap country continent
+## 294 1977 9.435e+08   63.97     741.2   China      Asia
+## 295 1982 1.000e+09   65.53     962.4   China      Asia
+## 296 1987 1.084e+09   67.27    1378.9   China      Asia
+## 297 1992 1.165e+09   68.69    1655.8   China      Asia</code></pre>
+<p>Now that capitalize those words, we will now look for other inconsistency, like spelling. I think one way to look for where to start looking is to look at any inconsistency in the number of unique levels.</p>
+<pre class="r"><code>unique(dirty_file2$continent)</code></pre>
+<pre><code>## [1] &quot;Asia&quot;     &quot;Europe&quot;   &quot;Africa&quot;   &quot;Americas&quot; &quot;Oceania&quot;  &quot;America&quot;</code></pre>
+<p>Aha, we have <code>America</code> and <code>Americas</code>, a inconsistent spelling. So let’s find the Americas rows and rename their continent names.</p>
+<pre class="r"><code>head(dirty_file2[dirty_file2$continent == &quot;Americas&quot;, ])</code></pre>
+<pre><code>##    year      pop lifeExp gdpPercap   country continent
+## 49 1952 17876956   62.48      5911 Argentina  Americas
+## 50 1957 19610538   64.40      6857 Argentina  Americas
+## 51 1962 21283783   65.14      7133 Argentina  Americas
+## 52 1967 22934225   65.63      8053 Argentina  Americas
+## 53 1972 24779799   67.06      9443 Argentina  Americas
+## 54 1977 26983828   68.48     10079 Argentina  Americas</code></pre>
+<pre class="r"><code>nrow(dirty_file2[dirty_file2$continent == &quot;Americas&quot;, ])</code></pre>
+<pre><code>## [1] 297</code></pre>
+<pre class="r"><code>dirty_file2[dirty_file2$continent == &quot;Americas&quot;, ]$continent = &quot;America&quot;
+
+nrow(dirty_file2[dirty_file2$continent == &quot;Americas&quot;, ])</code></pre>
+<pre><code>## [1] 0</code></pre>
+<pre class="r"><code>unique(dirty_file2$continent)</code></pre>
+<pre><code>## [1] &quot;Asia&quot;    &quot;Europe&quot;  &quot;Africa&quot;  &quot;America&quot; &quot;Oceania&quot;</code></pre>
+<p>There might be other problems, but let’s look at what we have so far and how it compares to the actual gapminder.</p>
+</div>
+<div id="final-check" class="section level1">
+<h1>(Final) check</h1>
+<p>We will now check with the actual clean gapminder data.</p>
+<pre class="r"><code># first load it 
+gapminder &lt;- read.delim(&quot;gapminderDataFiveYear.txt&quot;)
+str(gapminder)</code></pre>
+<pre><code>## 'data.frame':    1704 obs. of  6 variables:
+##  $ country  : Factor w/ 142 levels &quot;Afghanistan&quot;,..: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ year     : int  1952 1957 1962 1967 1972 1977 1982 1987 1992 1997 ...
+##  $ pop      : num  8425333 9240934 10267083 11537966 13079460 ...
+##  $ continent: Factor w/ 5 levels &quot;Africa&quot;,&quot;Americas&quot;,..: 3 3 3 3 3 3 3 3 3 3 ...
+##  $ lifeExp  : num  28.8 30.3 32 34 36.1 ...
+##  $ gdpPercap: num  779 821 853 836 740 ...</code></pre>
+<pre class="r"><code>str(dirty_file2)</code></pre>
+<pre><code>## 'data.frame':    1704 obs. of  6 variables:
+##  $ year     : int  1952 1957 1962 1967 1972 1977 1982 1987 1992 1997 ...
+##  $ pop      : num  8425333 9240934 10267083 11537966 13079460 ...
+##  $ lifeExp  : num  28.8 30.3 32 34 36.1 ...
+##  $ gdpPercap: num  779 821 853 836 740 ...
+##  $ country  : chr  &quot;Afghanistan&quot; &quot;Afghanistan&quot; &quot;Afghanistan&quot; &quot;Afghanistan&quot; ...
+##  $ continent: chr  &quot;Asia&quot; &quot;Asia&quot; &quot;Asia&quot; &quot;Asia&quot; ...</code></pre>
+<p>We see that some differences still exist. First, the columns are not ordered in the same way. Moreover, the country and continent fields are not read as factors. Fixing one problem at a time….</p>
+<p>Reorder columns by column index:</p>
+<pre class="r"><code># get the colnames and their indices 
+rbind(colnames(gapminder), colnames(dirty_file2) )</code></pre>
+<pre><code>##      [,1]      [,2]   [,3]      [,4]        [,5]      [,6]       
+## [1,] &quot;country&quot; &quot;year&quot; &quot;pop&quot;     &quot;continent&quot; &quot;lifeExp&quot; &quot;gdpPercap&quot;
+## [2,] &quot;year&quot;    &quot;pop&quot;  &quot;lifeExp&quot; &quot;gdpPercap&quot; &quot;country&quot; &quot;continent&quot;</code></pre>
+<pre class="r"><code># reorder dirty_file2 columns 
+dirty_file2 &lt;- dirty_file2[c(5, 1, 2, 6, 3, 4)]
+str(dirty_file2) #check </code></pre>
+<pre><code>## 'data.frame':    1704 obs. of  6 variables:
+##  $ country  : chr  &quot;Afghanistan&quot; &quot;Afghanistan&quot; &quot;Afghanistan&quot; &quot;Afghanistan&quot; ...
+##  $ year     : int  1952 1957 1962 1967 1972 1977 1982 1987 1992 1997 ...
+##  $ pop      : num  8425333 9240934 10267083 11537966 13079460 ...
+##  $ continent: chr  &quot;Asia&quot; &quot;Asia&quot; &quot;Asia&quot; &quot;Asia&quot; ...
+##  $ lifeExp  : num  28.8 30.3 32 34 36.1 ...
+##  $ gdpPercap: num  779 821 853 836 740 ...</code></pre>
+<p>Turn characters into factors:</p>
+<pre class="r"><code>dirty_file2$continent  &lt;-  as.factor(dirty_file2$continent)
+dirty_file2$country   &lt;-  as.factor(dirty_file2$country)
+str(dirty_file2)</code></pre>
+<pre><code>## 'data.frame':    1704 obs. of  6 variables:
+##  $ country  : Factor w/ 146 levels &quot;Afghanistan&quot;,..: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ year     : int  1952 1957 1962 1967 1972 1977 1982 1987 1992 1997 ...
+##  $ pop      : num  8425333 9240934 10267083 11537966 13079460 ...
+##  $ continent: Factor w/ 5 levels &quot;Africa&quot;,&quot;America&quot;,..: 3 3 3 3 3 3 3 3 3 3 ...
+##  $ lifeExp  : num  28.8 30.3 32 34 36.1 ...
+##  $ gdpPercap: num  779 821 853 836 740 ...</code></pre>
+<pre class="r"><code>str(gapminder)</code></pre>
+<pre><code>## 'data.frame':    1704 obs. of  6 variables:
+##  $ country  : Factor w/ 142 levels &quot;Afghanistan&quot;,..: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ year     : int  1952 1957 1962 1967 1972 1977 1982 1987 1992 1997 ...
+##  $ pop      : num  8425333 9240934 10267083 11537966 13079460 ...
+##  $ continent: Factor w/ 5 levels &quot;Africa&quot;,&quot;Americas&quot;,..: 3 3 3 3 3 3 3 3 3 3 ...
+##  $ lifeExp  : num  28.8 30.3 32 34 36.1 ...
+##  $ gdpPercap: num  779 821 853 836 740 ...</code></pre>
+<p>Now that we have turned both country and continent to factors, we can see that in our data set we have more countries than we should and this is probably due to inconsistent input of countries, making R telling us there are more countries than there should be. I know I’m kind of cheating a little bit here because I already know what the clean data is supposed to look like (and thus I know how to check for differences)… but we’ll try to solve that one anyway!</p>
+<p>First get the occurence of each “country” factor in a table.</p>
+<pre class="r"><code>country_table &lt;- table(dirty_file2$country)
+head(country_table)</code></pre>
+<p>Afghanistan Albania Algeria Angola Argentina Australia 12 12 12 12 12 12</p>
+<p>We can either fully examine through this table with human eyes and look for the odd balls, or do something like:</p>
+<pre class="r"><code>list_num  &lt;- as.vector(table(dirty_file2$country))
+list_num[list_num != 12]</code></pre>
+<pre><code>## [1]  4  8 10  1 11  1  1</code></pre>
+<p>Looks like we have more than just a few country names that are inconsistent. To find them, we’ll get the indices and refer back to the table.</p>
+<pre class="r"><code>indices_12 &lt;- which(list_num != 12)
+country_table[indices_12]</code></pre>
+<pre><code>## 
+##         Central african republic         Central African Republic 
+##                                4                                8 
+##                 Congo, Dem. Rep.       Congo, Democratic Republic 
+##                               10                                1 
+##                    Cote d'Ivoire                     Cote d'Ivore 
+##                               11                                1 
+## Democratic Republic of the Congo 
+##                                1</code></pre>
+<p>Bingo. We now go ahead and fix these countries one by one. I already checked with the actual gapminder data to see what each of the country names should be. Or one can also just assume that the mispelled one is the one with the less count.</p>
+<pre class="r"><code># fix Congo, Dem. Rep. 
+dirty_file2[dirty_file2$country == &quot;Congo, Democratic Republic&quot;,]$country = 
+  &quot;Congo, Dem. Rep.&quot; 
+
+dirty_file2[dirty_file2$country==&quot;Democratic Republic of the Congo&quot;,]$country =
+  &quot;Congo, Dem. Rep.&quot;
+# fix for Cote d'Ivoire
+dirty_file2[dirty_file2$country==&quot;Cote d'Ivore&quot;,]$country =
+  &quot;Cote d'Ivoire&quot;
+
+# fix Central African Republic
+dirty_file2[dirty_file2$country==&quot;Central african republic&quot;,]$country =
+  &quot;Central African Republic&quot;
+
+dirty_files2 &lt;- droplevels(dirty_file2) # make sure you do this!!!!! </code></pre>
+<p>Now we check the data frames again.</p>
+<pre class="r"><code>str(gapminder)</code></pre>
+<pre><code>## 'data.frame':    1704 obs. of  6 variables:
+##  $ country  : Factor w/ 142 levels &quot;Afghanistan&quot;,..: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ year     : int  1952 1957 1962 1967 1972 1977 1982 1987 1992 1997 ...
+##  $ pop      : num  8425333 9240934 10267083 11537966 13079460 ...
+##  $ continent: Factor w/ 5 levels &quot;Africa&quot;,&quot;Americas&quot;,..: 3 3 3 3 3 3 3 3 3 3 ...
+##  $ lifeExp  : num  28.8 30.3 32 34 36.1 ...
+##  $ gdpPercap: num  779 821 853 836 740 ...</code></pre>
+<pre class="r"><code>str(dirty_file2)</code></pre>
+<pre><code>## 'data.frame':    1704 obs. of  6 variables:
+##  $ country  : Factor w/ 146 levels &quot;Afghanistan&quot;,..: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ year     : int  1952 1957 1962 1967 1972 1977 1982 1987 1992 1997 ...
+##  $ pop      : num  8425333 9240934 10267083 11537966 13079460 ...
+##  $ continent: Factor w/ 5 levels &quot;Africa&quot;,&quot;America&quot;,..: 3 3 3 3 3 3 3 3 3 3 ...
+##  $ lifeExp  : num  28.8 30.3 32 34 36.1 ...
+##  $ gdpPercap: num  779 821 853 836 740 ...</code></pre>
+<p>Looks the same!</p>
+</div>
+<div id="grand-final-check" class="section level1">
+<h1>Grand final check</h1>
+<pre class="r"><code>identical(gapminder, dirty_file2)</code></pre>
+<pre><code>## [1] FALSE</code></pre>
+<p>WHAAA, I honestly don’t know why.</p>
 </div>
 
 

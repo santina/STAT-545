@@ -46,5 +46,212 @@ str(dirty_file2)
 I don't see much difference, exacept that the number of region factor levels has changed. With `strip.white = FALSE` by default , it's 151, and now it's 148. Let's examine it closer: 
 
 ```{r}
+head(levels(dirty_file$region))
+head(levels(dirty_file2$region))
+```
+We can see that the first two have disappeared in `dirty_file2` ! And they have white spaces. So it looks like those are eliminated or stripped of their white space (likely the latter but why not just check). 
+
+Let's look at the factor levels with white space: 
+```{r}
+grep("^\\s.", dirty_file$region, value = TRUE) #spaces at the beginning
+```
+
+We can see that there are three of them, and that accounts for the difference between the number of factors in region between the two files! 
+
+```{r}
+head(levels(dirty_file$region))
+head(levels(dirty_file2$region))
+```
+
+And indeed, once the white space are stripped out, they become identical to the other factors, thus reducing the factor levels. This is important because sometimes people put spaces when they input some values. Stripping off the space ensure that we are not counting those inputs as unique inputs. 
+
+Knowing this we will know work with `dirty_file2`
+
+# Splitting and merging 
+We know that the column region contains both country name and continent name. So maybe we should split that into two columns. 
+```{r}
+# first split the value of region into two conceptual names, do this for each row
+continent_country  <- adply(as.character(dirty_file2$region), .margin = 1, function(data){
+  unlist(strsplit(data, "_"))
+})
+
+head(continent_country)
+```
+
+We have successfully separated the two pieces of information, now we need to glue it the original dataframe `dirty_file2`. 
+
+```{r, results='asis'}
+# put the country in: 
+dirty_file2 <- mutate(dirty_file2, country = continent_country$V2)
+# put the continent in 
+dirty_file2 <- mutate(dirty_file2, continent = continent_country$V1)
+dirty_file2 %>% head() %>% kable()
+```
+
+We successfully put those two columns in! Now we drop the region column because it's no longer necessary. 
+
+```{r, results='asis'}
+keeps  <- colnames(dirty_file)
+dirty_file2  <- dirty_file2[, !colnames(dirty_file2) == "region"]
+head(dirty_file2) %>%
+  kable()
+```
+
+# Missing values 
+
+Now we're going to check if there are any `NA` values inside our most up-to-date data frame. 
+
+```{r}
+dirty_file[!complete.cases(dirty_file), ]
+```
+Hum... nothing shows up! Apparently all rows are complete. But from previous examination of our region column, I remember there was some with only "_Canada", which means their continent value was missing. Let's check
+```{r}
+canada  <- dirty_file2[dirty_file2$country == "Canada", ]
+head(canada)
+canada[!complete.cases(canada), ]
+```
+We can see that continent information are missing for some rows in `canada`, but they're still regarded as complete. 
+
+```{r}
+unique(canada$continent)
+```
+And indeed, the empty string are not treated as `NA` value, so we need another way to search for them. 
+
+```{r}
+dirty_file2[dirty_file2$continent == "", ]
+```
+
+Only those three entries are missing. We'll manually fill them now. 
+``` {r}
+dirty_file2[241:243, ]$continent = "America"
+dirty_file2[241:243, ]
 
 ```
+Now we've done it! 
+
+# Capitalization 
+According to the [assignment instruction](stat545-ubc.github.io/hw08_data-cleaning.html), there are some entries with inconsistent capitalization and lower cases, which probably have make the number of unique factors more than it should. So we'll check that, first the country: 
+
+```{r}
+#country names should be capitalized, so let's search for lower case (first letter)
+grep("^\\b[a-z]", dirty_file2$country, value = TRUE)
+# ^: beginning of the string 
+```
+
+Hey, there are four country entries that are lower case `china`. We need to find where they are and replace them with `China`. 
+
+```{r}
+indices  <- grep("^\\b[a-z]", dirty_file2$country)
+dirty_file2[indices, ]
+dirty_file2[indices, ]$country = "China"
+dirty_file2[indices, ] # now it's good 
+```
+
+Now that capitalize those words, we will now look for other inconsistency, like spelling. 
+I think one way to look for where to start looking is to look at any inconsistency in the number of unique levels. 
+```{r}
+unique(dirty_file2$continent)
+```
+Aha, we have `America` and `Americas`, a inconsistent spelling. So let's find the Americas rows and rename their continent names.
+
+```{r}
+head(dirty_file2[dirty_file2$continent == "Americas", ])
+nrow(dirty_file2[dirty_file2$continent == "Americas", ])
+dirty_file2[dirty_file2$continent == "Americas", ]$continent = "America"
+
+nrow(dirty_file2[dirty_file2$continent == "Americas", ])
+unique(dirty_file2$continent)
+```
+There might be other problems, but let's look at what we have so far and how it compares to the actual gapminder. 
+
+
+# (Final) check
+
+We will now check with the actual clean gapminder data. 
+
+```{r}
+# first load it 
+gapminder <- read.delim("gapminderDataFiveYear.txt")
+str(gapminder)
+str(dirty_file2)
+
+```
+We see that some differences still exist. First, the columns are not ordered in the same way. Moreover, the country and continent fields are not read as factors. Fixing one problem at a time....
+
+Reorder columns by column index: 
+```{r}
+# get the colnames and their indices 
+rbind(colnames(gapminder), colnames(dirty_file2) )
+# reorder dirty_file2 columns 
+dirty_file2 <- dirty_file2[c(5, 1, 2, 6, 3, 4)]
+str(dirty_file2) #check 
+```
+
+Turn characters into factors: 
+```{r}
+dirty_file2$continent  <-  as.factor(dirty_file2$continent)
+dirty_file2$country   <-  as.factor(dirty_file2$country)
+str(dirty_file2)
+str(gapminder)
+```
+
+Now that we have turned both country and continent to factors, we can see that in our data set we have more countries than we should and this is probably due to inconsistent input of countries, making R telling us there are more countries than there should be. I know I'm kind of cheating a little bit here because I already know what the clean data is supposed to look like (and thus I know how to check for differences)... but we'll try to solve that one anyway! 
+
+First get the occurence of each "country" factor in a table. 
+```{r, results='asis'}
+country_table <- table(dirty_file2$country)
+head(country_table)
+```
+
+We can either fully examine through this table with human eyes and look for the odd balls, or do something like: 
+
+```{r}
+list_num  <- as.vector(table(dirty_file2$country))
+list_num[list_num != 12]
+
+```
+
+Looks like we have more than just a few country names that are inconsistent. To find them, we'll get the indices and refer back to the table. 
+
+```{r}
+indices_12 <- which(list_num != 12)
+country_table[indices_12]
+```
+Bingo. We now go ahead and fix these countries one by one. I already checked with the actual gapminder data to see what each of the country names should be. Or one can also just assume that the mispelled one is the one with the less count. 
+
+```{r}
+# fix Congo, Dem. Rep. 
+dirty_file2[dirty_file2$country == "Congo, Democratic Republic",]$country = 
+  "Congo, Dem. Rep." 
+
+dirty_file2[dirty_file2$country=="Democratic Republic of the Congo",]$country =
+  "Congo, Dem. Rep."
+# fix for Cote d'Ivoire
+dirty_file2[dirty_file2$country=="Cote d'Ivore",]$country =
+  "Cote d'Ivoire"
+
+# fix Central African Republic
+dirty_file2[dirty_file2$country=="Central african republic",]$country =
+  "Central African Republic"
+
+dirty_files2 <- droplevels(dirty_file2) # make sure you do this!!!!! 
+```
+
+
+Now we check the data frames again. 
+```{r}
+str(gapminder)
+str(dirty_file2)
+summary(gapminder)
+summary(dirty_file2)
+```
+
+Looks the same! 
+
+# Grand final check 
+
+```{r}
+identical(gapminder, dirty_file2)
+```
+
+WHAAA, I honestly don't know why. 
