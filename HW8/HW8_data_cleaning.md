@@ -576,6 +576,52 @@ str(dirty_file2)
 ##  $ gdpPercap: num  779 821 853 836 740 ...
 ```
 
+```r
+summary(gapminder)
+```
+
+```
+##         country          year           pop              continent  
+##  Afghanistan:  12   Min.   :1952   Min.   :6.00e+04   Africa  :624  
+##  Albania    :  12   1st Qu.:1966   1st Qu.:2.79e+06   Americas:300  
+##  Algeria    :  12   Median :1980   Median :7.02e+06   Asia    :396  
+##  Angola     :  12   Mean   :1980   Mean   :2.96e+07   Europe  :360  
+##  Argentina  :  12   3rd Qu.:1993   3rd Qu.:1.96e+07   Oceania : 24  
+##  Australia  :  12   Max.   :2007   Max.   :1.32e+09                 
+##  (Other)    :1632                                                   
+##     lifeExp       gdpPercap     
+##  Min.   :23.6   Min.   :   241  
+##  1st Qu.:48.2   1st Qu.:  1202  
+##  Median :60.7   Median :  3532  
+##  Mean   :59.5   Mean   :  7215  
+##  3rd Qu.:70.8   3rd Qu.:  9325  
+##  Max.   :82.6   Max.   :113523  
+## 
+```
+
+```r
+summary(dirty_file2)
+```
+
+```
+##         country          year           pop             continent  
+##  Afghanistan:  12   Min.   :1952   Min.   :6.00e+04   Africa :624  
+##  Albania    :  12   1st Qu.:1966   1st Qu.:2.79e+06   America:300  
+##  Algeria    :  12   Median :1980   Median :7.02e+06   Asia   :396  
+##  Angola     :  12   Mean   :1980   Mean   :2.96e+07   Europe :360  
+##  Argentina  :  12   3rd Qu.:1993   3rd Qu.:1.96e+07   Oceania: 24  
+##  Australia  :  12   Max.   :2007   Max.   :1.32e+09                
+##  (Other)    :1632                                                  
+##     lifeExp       gdpPercap     
+##  Min.   :23.6   Min.   :   241  
+##  1st Qu.:48.2   1st Qu.:  1202  
+##  Median :60.7   Median :  3532  
+##  Mean   :59.5   Mean   :  7215  
+##  3rd Qu.:70.8   3rd Qu.:  9325  
+##  Max.   :82.6   Max.   :113523  
+## 
+```
+
 Looks the same! 
 
 # Grand final check 
@@ -589,4 +635,4 @@ identical(gapminder, dirty_file2)
 ## [1] FALSE
 ```
 
-WHAAA, I honestly don't know why. 
+WHAAA, I honestly don't know why. Sorry for the anti-climax, but I really don't understand. 
