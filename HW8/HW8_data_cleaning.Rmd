@@ -1,0 +1,50 @@
+---
+title: "HW8: Cleaning data"
+author: "Santina"
+date: "Thursday, November 6 2014"
+output: 
+  html_document:
+    keep_md: true
+    toc: yes
+    toc_depth: 4 
+---
+
+In this assignment, we are going to attemp to clean up the gapminder data that has been purposely messed up for the purpose of this assignment. We would use some techniques that have to do with manipulating data/table and regular expressions. 
+
+First get some useful packages loaded first 
+
+```{r, message=FALSE}
+library(stringr) # for regular expression
+library(plyr)       # for easy computation with data frames
+library(dplyr)      # do this after loading plyr
+library(knitr)      # for rendering pretty tables
+library(grid)
+library(gridExtra)  # arranging graph
+```
+
+# load the dirty gapminder data 
+```{r, results='asis'}
+# read our dirty gapminder file 
+dirty_file <- read.delim("gapminderDataFiveYear_dirty.txt")
+kable(head(dirty_file))
+str(dirty_file)
+```
+
+We can see that there are 151 different regions, each is the country name and continent combined together. 
+
+## strip.white argument 
+
+Let's examine what strip.white argument does to a data.frame in reading a file. 
+
+```{r, results='asis'}
+dirty_file2 <- read.delim("gapminderDataFiveYear_dirty.txt", strip.white = TRUE)
+kable(head(dirty_file2))
+str(dirty_file2)
+
+```
+
+I don't see much difference, exacept that the number of region factor levels has changed. With `strip.white = FALSE` by default , it's 151, and now it's 148. Let's examine it closer: 
+
+```{r}
+
+```
