@@ -12,6 +12,9 @@ This is the repo of Santina.
 * [HW4] (https://github.com/STAT545-UBC/zz_sheng-ting_lin-coursework/tree/master/HW4): using plyr and dplyr as well as ggplot2, with functions and more advanced functions
 * [HW5] (https://github.com/STAT545-UBC/zz_sheng-ting_lin-coursework/blob/master/HW5/HW5_factorBoss.md) take you directly to the .md file! This is the final assignment for STAT545, covering organizing factors, reading/writingfiles, and much more! 
 
+* [HW7](https://github.com/STAT545-UBC/zz_sheng-ting_lin-coursework/blob/master/HW7/hw7_data_wrangling.md): file and data wrangling and manipulation to a crazy extent, sometimes with a bunch of ddply and its family members
+* [HW8](https://github.com/STAT545-UBC/zz_sheng-ting_lin-coursework/blob/master/HW8/HW8_data_cleaning.md): cleaning a dirty version of gapminder data and regular expression
+
 # A bit about me: 
 
 * I'm in bioinformatics. 
