@@ -144,4 +144,55 @@ output: html_document
   * important : each stage never modify its input 
 - some symbols
   * $<  imput file
-  * $@ output 
+  * $@ output (target)
+  
+-------
+
+# Wednesday Nov 5 
+- #^ ? 
+- article.html: article.Rmd..  so if Rmd gets modified, the following codes gets run.
+- use pattern rules, $@, $<
+```{r }
+all: article.html
+
+%.png: %.gv
+    dot -Tpng -o $@ $<
+
+%.md: %.Rmd
+    Rscript -e 'knitr::knit("$<", "$@")'
+
+%.html: %.md
+    pandoc -s -o $@ $<
+
+article.html: figure.png
+```
+- if you change figure.png then it will know it has to update article.html
+	* the third command shows make how to update any html file 
+
+```
+.DELETE_ON_ERROR:
+.SECONDARY:
+
+%.png: %.gv
+    dot -Tpng -o $@ $<
+
+%.md: %.Rmd
+    Rscript -e 'knitr::knit("$<", "$@")'
+
+%.html: %.md
+    pandoc -s -o $@ $<
+
+article.html: figure.png
+
+```
+	
+- .DELETE_ON_ERROR: delete open files if there are errors 
+- .SECONDARY : don't delete intermediate files 
+
+----------------
+
+# Monday Nov 10 : Build your first R packages
+- old.packages() : this updates packages 
+- update.packages()
+- update.packages(ask = FALSE)
+- http://r-pkgs.had.co.nz/r.html 
