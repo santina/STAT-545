@@ -196,3 +196,45 @@ article.html: figure.png
 - update.packages()
 - update.packages(ask = FALSE)
 - http://r-pkgs.had.co.nz/r.html 
+- http://stat545-ubc.github.io/packages02_activity.html Instruction and activity for the class 
+
+# Wednesday Nov 12 
+- https://speakerdeck.com/jennybc/ubc-stat545-2014-cm107-context-for-writing-your-first-r-package-week
+  * (didn't pay too much attention at this so need to catch up)
+- we gonna write a unit test! 
+  * what's viignette? 
+  * http://stat545-ubc.github.io/packages03_activity_part2.html
+  * remember to re/build
+- run library("devtools") before using document()
+
+- library(roxygen2)
+  * browseVignettes(package = "roxygen2")
+- use_vignette("overview")
+  * make you a folder for unit test?
+  * made a folder vignette with a .rmd
+  * edit that according 
+  * basically a way to use documentation 
+- build_vignettes()
+  * make inst/doc/
+  * overiew.html, overview.R, overview.Rmd
+- to see your Vignette documentation 
+  * build and rebuill 
+  * (load the package.. not sure necessary or not)
+  * browseVignettes(package= "gameplay")  or whatever you named it as
+  
+- trouble with git 
+  * doesn't let me push! 
+  * go to git tag, more, shell
+  * git push -u origin master 
+     - -u means upstring, not sure what that means 
+- try download your package   
+  * install_git("santina/gameplay") 
+  * (gotta load "devtools" first )
+  
+- TEST! 
+  * write your test , don't it in the main folder 
+  * library('testthat') 
+  * use_testthat()  make a fodler for you 
+  * move that test.R file to test/testthat 
+  * test(), if it's a dot that means it pass I think
+  * go to build, more, test packages 
