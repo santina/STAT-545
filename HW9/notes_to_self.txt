@@ -1,0 +1,16 @@
+all: dictionary.txt
+  echo Build done
+
+clean:
+	Rscript 'clean.R'
+	echo Cleaned
+
+# download the the lord of ring data from the internet 
+dictionary.txt:
+	Rscript 'download_LOR.R'
+
+# processing data 
+analysis.csv
+
+============
+When I wrote that, build all still runs and LOR file got downloaded just fine. wha
