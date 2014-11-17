@@ -238,3 +238,10 @@ article.html: figure.png
   * move that test.R file to test/testthat 
   * test(), if it's a dot that means it pass I think
   * go to build, more, test packages 
+  
+  
+# Monday Nov 16 
+- anatomy of a shiy app
+  * two scripts: ui.R (user interface, how to display) and server.R (serving the data)
+- [Basic ideas](http://stat545-ubc.github.io/shiny01_slides.pdf)
+- Shiny likes it when you organize your files in a certain way 
