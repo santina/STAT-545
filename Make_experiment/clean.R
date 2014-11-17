@@ -1,0 +1,1 @@
+file.remove("dictionary.txt", "histogram.tsv",  "histogram.png", "histogram.html")

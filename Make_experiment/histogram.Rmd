@@ -1,0 +1,23 @@
+---
+title: "histogram"
+author: "Santina"
+date: "Monday, November 03, 2014"
+output:
+  html_document:
+    keep_md: yes
+---
+
+# Read the input
+```{r read-input}
+
+```
+
+# Generate the histogram
+```{r generate-histogram}
+
+```
+
+# Write the output
+```{r write-output}
+
+```
