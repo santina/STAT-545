@@ -245,3 +245,4 @@ article.html: figure.png
   * two scripts: ui.R (user interface, how to display) and server.R (serving the data)
 - [Basic ideas](http://stat545-ubc.github.io/shiny01_slides.pdf)
 - Shiny likes it when you organize your files in a certain way 
+- btw look into http://ggvis.rstudio.com/
