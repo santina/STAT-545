@@ -240,9 +240,63 @@ article.html: figure.png
   * go to build, more, test packages 
   
   
-# Monday Nov 16 
+# Monday Nov 17 
 - anatomy of a shiy app
   * two scripts: ui.R (user interface, how to display) and server.R (serving the data)
 - [Basic ideas](http://stat545-ubc.github.io/shiny01_slides.pdf)
 - Shiny likes it when you organize your files in a certain way 
 - btw look into http://ggvis.rstudio.com/
+
+# Wed Nov 19
+- reminders
+	* library(shiny)
+	* many brackets 
+- use showcase 
+	* setwd("C:/Users/Santina Lin/Documents/zz_sheng-ting_lin-coursework/ShinyApp/")
+	* runApp('Gapminder_App/', display.mode = "showcase")
+	* code would be highlight when you interact with the user interface 
+	
+# Monday Nov 24 :  get data from internet 
+
+## talking parts
+- http://stat545-ubc.github.io/hw10_package_peer-review.html
+	* if you have trouble peer reviewing HW10 
+- four ways to get data from internet
+	* flat file, like gapminder 
+	* install-and-play published in a repo which has an API 
+	* API-query publshed with an unwrapped API
+	* scraping implicit web internet 
+- world value survey
+	* be downloaded one at a time. 
+- figshare
+	* to be downloaded one at a time. Scientific data in csv 
+- APIs (application programming interface)
+	* specifies how software component should interact 
+	* [Thousands of APIs](http://www.programmableweb.com/)
+- implicit within a website 
+	* like wikipedia, IMAD, Star Trek Wiki 
+- [transforming science through open data](http://ropensci.org/)
+	* list of R packages that get internet from different websites! 
+- rationale 
+	* provenance, reproducible, updating, ease, scaling 
+
+## tutorial 
+- see the Nov 24 script 
+
+# Nov 26 Wednesday
+
+
+## make .Rprofile 
+- [started here](http://stat545-ubc.github.io/webdata02_activity.html#searching-the-public-library-of-science-rplos)
+- http://alm.plos.org/ 
+- open new project
+- make a R script (.Rprofile)
+- make sure put enter after the line you set the key 
+- it's in "C:/Users/Santina Lin/Desktop/STAT545/RPLOS"
+## get data from the web 
+- [activity](http://stat545-ubc.github.io/webdata03_activity.html)
+	* about JSON and XML
+	* how to get those data from the web 
+- scraping data
+	* always check if API already exists 
+
