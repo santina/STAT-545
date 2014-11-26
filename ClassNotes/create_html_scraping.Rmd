@@ -1,0 +1,10 @@
+---
+output: html_document
+---
+
+```{r echo=FALSE, results='asis'}
+gpURL <- "http://www.stat.ubc.ca/~jenny/notOcto/STAT545A/examples/gapminder/data/gapminderDataFiveYear.txt"
+dataExcerpt <- read.delim(file = gpURL) 
+knitr::kable(head(dataExcerpt))
+
+```
