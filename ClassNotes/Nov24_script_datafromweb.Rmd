@@ -1,0 +1,102 @@
+
+Get data from the web 
+
+```{r}
+library(rebird)
+library(knitr)
+```
+It's for a ebird data 
+
+```{r}
+ebirdgeo(species = "spinus tristis", lat = 42, lng = -76)
+# given scientific name and the location 
+ebirdgeo(species = "poecille gambell", lat = 42, lng = -123)
+# it knows where you are too
+ebirdgeo(species = 'buteo lagopus')
+```
+
+```{r results ='asis'}
+vanbirds <- ebirdgeo(lat = 49.25, lng = -123.1)
+kable(head(vanbirds)) # a bird list for vancouver 
+```
+
+```{r}
+ebirdregion("US-IL") # given a region code, search the website 
+```
+
+# search geographic info : 'geonames'
+```{r}
+install.packages("rjson")
+# downloading from github so to make sure it's most up-to-date 
+devtools::install_github("ropensci/geonames") 
+library(geonames)
+```
+
+# API and authentification
+We're gonna use geonames to get geo info (? not sure)
+
+1. geonames.org/login, make an account 
+2. http://www.geonames.org/enablefreewebservice
+3. go to this site, which enable you to get data in a more programmer way 
+
+```{r}
+options(geonamesUsername = "santina")
+```
+
+## let's get all countries in the world
+```{r}
+countryInfo <- GNcountryInfo()
+head(countryInfo)
+
+library(dplyr)
+glimpse(countryInfo) # structure but easier to read 
+```
+
+Use `?functionName()` to see the source (url ) of the info
+
+```{r}
+sub <- countryInfo %>%
+	filter(countryName == "France")
+
+gcities <- GNcities(north = sub$north, 
+										east = sub$east, 
+										south = sub$south, 
+										west = sub$west, 
+										maxRows = 500)
+head(gcities)
+```
+
+## how many birds have been seen in France? 
+
+```{r}
+frenchbirds <- countryInfo %>%
+	filter(countryName %in% c("France", "Canada")) %>% # tried Germany, didn't work
+	group_by(countryName) %>% # do by countryName (each country)
+	do(allbirds = ebirdregion(.$countryCode)) # sticks all info into a cell of the datamframe
+
+
+class(frenchbirds[[1,2]])
+head(frenchbirds[[1,2]])
+```
+
+# by wikipedia
+(missed)
+```{r}
+
+```
+
+
+# use PLOS API 
+
+```{r }
+install.packages("rplos")
+library("rplos") #http://ropensci.org/tutorials/rplos_tutorial.html
+```
+
+Get this account 
+- http://alm.plos.org/
+- save your API key as an environmental variable for privacy
+
+```{r}
+
+```
