@@ -3,15 +3,23 @@ shinyUI(fluidPage(
   
   sidebarLayout(
     sidebarPanel(
-                 # make a drop down menu
+                helpText("Select your filtering criteria"),
     						 uiOutput("choose_country"),
                  sliderInput("year_range",
-                             label = "Range of years: ",
+                             label = h4("Range of years: "),
                              min = 1952, # info we already know about our data
                              max = 2007,
                              value = c(1955,2005), # set the starting value
                              format = "####"         
-                )
+                ), 
+    						 selectInput("dropdown", 
+    						             label = h4("Choose a variable"),
+    						             choices = c("Population", "GDP per Capita",
+    						                         "Life Expectancy"),
+    						             selected = "Population")
+    						 
+    						 #hr(),
+    						 #fluidRow(column(3, verbatimTextOutput("value")))
                 # this makes it that no plot is changed/generated until it's hit
                 #submitButton(text = "Apply Changes")
     						 
@@ -19,8 +27,7 @@ shinyUI(fluidPage(
     ),
     # the strings in those bracket are acutal name in server.R
     mainPanel(
-              textOutput("output_country"), # reference to server.R
-              textOutput("info"), 
+              #textOutput('info'),
     					plotOutput("ggplot_gdppc_vs_country"),
     					tableOutput("gapminder_table") # must be the same in server.R
     					
