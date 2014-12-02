@@ -15,6 +15,12 @@ This is the repo of Santina.
 * [HW7](https://github.com/STAT545-UBC/zz_sheng-ting_lin-coursework/blob/master/HW7/hw7_data_wrangling.md): file and data wrangling and manipulation to a crazy extent, sometimes with a bunch of ddply and its family members
 * [HW8](https://github.com/STAT545-UBC/zz_sheng-ting_lin-coursework/blob/master/HW8/HW8_data_cleaning.md): cleaning a dirty version of gapminder data and regular expression
 * [HW9](https://github.com/STAT545-UBC/zz_sheng-ting_lin-coursework/blob/master/HW9/report.md): on making a data analysis pipeline by using a [MakeFile](https://github.com/STAT545-UBC/zz_sheng-ting_lin-coursework/blob/master/HW9/Makefile) in R studio. Data analysis was performed on [lord of the ring data] (https://gist.githubusercontent.com/sjackman/c10a5f7bcf6eebc1ba14/raw/b033c038605f9fdac855479714f65703be565b81/lotr_raw.tsv), a big file recording number of spoken words by different main characters, their races, chapters, and films. 
+* [HW10](https://github.com/santina/gameplay)
+  * made an R package on NHL game! 
+  * homework outline can be found [here](http://stat545-ubc.github.io/hw10_package.html)
+* [HW11](https://github.com/STAT545-UBC/zz_sheng-ting_lin-coursework/tree/master/ShinyApp/Gapminder_App)
+  * also accessible [here on shinyapp.io](https://santinalin.shinyapps.io/Gapminder_App/)
+  * this is based on what I learned from the [shiny app tutorial](http://stat545-ubc.github.io/shiny00_index.html)
 
 # A bit about me: 
 
