@@ -1,9 +1,9 @@
-shinyUI(fluidPage(
+shinyUI(fluidPage(theme = "bootstrap.css",
   titlePanel("Gapminder Shiny App"),
   
   sidebarLayout(
     sidebarPanel(
-                helpText("Select your filtering criteria"),
+                helpText(h5("Select your filtering criteria")),
     						 uiOutput("choose_country"),
                  sliderInput("year_range",
                              label = h4("Range of years: "),
