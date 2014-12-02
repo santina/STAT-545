@@ -4,11 +4,8 @@ shinyUI(fluidPage(
   sidebarLayout(
     sidebarPanel("User input will be here", 
                  # make a drop down menu
-    						 #uiOuput("choose_country"),
-                 selectInput("select_country", 
-                             label = "Country", 
-                             choices = list("Iraq", "Canada", "Mali")
-                 ), 
+    						 uiOutput("choose_country"),
+    						 uiOutput("choose_country2"),
                  sliderInput("year_range",
                              label = "Range of years: ",
                              min = 1952, # info we already know about our data
@@ -16,13 +13,15 @@ shinyUI(fluidPage(
                              value = c(1955,2005), # set the starting value
                              format = "####"         
                 )
+                # this makes it that no plot is changed/generated until it's hit
+                #submitButton(text = "Apply Changes")
     						 
             
     ),
     # the strings in those bracket are acutal name in server.R
-    mainPanel("My cool graphs go here",
+    mainPanel(
               textOutput("output_country"), # reference to server.R
-              textOutput("info"), # add our select country to app
+              textOutput("info"), 
     					plotOutput("ggplot_gdppc_vs_country"),
     					tableOutput("gapminder_table") # must be the same in server.R
     					
