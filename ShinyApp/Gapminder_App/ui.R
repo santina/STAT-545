@@ -16,18 +16,11 @@ shinyUI(fluidPage(theme = "bootstrap.css",
     						             label = h4("Choose a variable"),
     						             choices = c("Population", "GDP per Capita",
     						                         "Life Expectancy"),
-    						             selected = "Population")
-    						 
-    						 #hr(),
-    						 #fluidRow(column(3, verbatimTextOutput("value")))
-                # this makes it that no plot is changed/generated until it's hit
-                #submitButton(text = "Apply Changes")
-    						 
+    						             selected = "Population")						 
             
     ),
     # the strings in those bracket are acutal name in server.R
     mainPanel(
-              #textOutput('info'),
     					plotOutput("ggplot_gdppc_vs_country"),
     					tableOutput("gapminder_table") # must be the same in server.R
     					
