@@ -2,6 +2,8 @@
 # Usage 
 This Shiny application, [Gapminder Shiny App](http://santinalin.shinyapps.io/Gapminder_App) reads country data downloaded from Gapminder. For the purpose of this application as an assignment, the data is read from a file in the same directory. 
 
+Click on __show below__ if the code window interferes with the view of the graph.
+
 Users can choose up to 10 countries by typing the names in the search box. The search will try to autocomplete the search. Users also have the options to adjust the parameters for x-axis and y-axis through the slide bar for years and dropdown menu for the variable of interest. 
 
 A data frame following the plot is the table from which the graph is produced. 
