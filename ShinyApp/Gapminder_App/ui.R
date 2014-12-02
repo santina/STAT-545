@@ -2,10 +2,9 @@ shinyUI(fluidPage(
   titlePanel("Gapminder Shiny App"),
   
   sidebarLayout(
-    sidebarPanel("User input will be here", 
+    sidebarPanel(
                  # make a drop down menu
     						 uiOutput("choose_country"),
-    						 uiOutput("choose_country2"),
                  sliderInput("year_range",
                              label = "Range of years: ",
                              min = 1952, # info we already know about our data

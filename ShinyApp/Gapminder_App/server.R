@@ -5,20 +5,17 @@ library(ggplot2)
 
 shinyServer(function(input, output){
   output$choose_country <- renderUI({ # get a country list
-  	selectInput("country1", "Country 1", 
-  							as.list(levels(data$country)))
+  	selectizeInput("countries", "Countries:",
+  							as.list(levels(data$country)), 
+                options = list(maxItems = 10))
   })
   
-  output$choose_country2 <- renderUI({ # get a country list
-    selectInput("country2", "Country 2", 
-                as.list(levels(data$country)))
-  })
 	
-	one_country_data <- reactive({
-		if(is.null(input$country1)){
+	country_data <- reactive({
+		if(is.null(input$countries[1])){
 			return(NULL)
 		}
-  	subset(data, country == input$country1 & 
+  	subset(data, country %in% input$countries & 
   				 	year %in% c(input$year_range[1]:input$year_range[2])) # get it from the UI! 
   })
 	
@@ -27,7 +24,7 @@ shinyServer(function(input, output){
   # which make interaction possible 
   output$gapminder_table <- renderTable({
     # str(input$select_country)
-  	one_country_data()    
+  	country_data()    
   })
   
   
@@ -41,11 +38,11 @@ shinyServer(function(input, output){
   })
   # this hold our plot
   output$ggplot_gdppc_vs_country <- renderPlot({
-  	if(is.null(one_country_data())){  
+  	if(is.null(country_data())){  
       # remember the ()
   		return(NULL)
   	}
-  	p <- ggplot(one_country_data(), aes(x = year, y= gdpPercap))
+  	p <- ggplot(country_data(), aes(x = year, y= gdpPercap,color = country))
   	p+ geom_point()
   })
 
