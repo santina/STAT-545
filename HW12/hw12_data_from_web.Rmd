@@ -169,9 +169,60 @@ There are so many types of birds!  Maybe if I study one bird each day for a year
 Let's search the number of publications
 
 ```{r}
-# need PlosApiKey, 
-# out <- plosword(birds_Canada$sciName)
+# this line takes a long time to run
+numb_publications <- plosword(birds_Canada$sciName)
+
+head(numb_publications)
+max_numb <- max(numb_publications$No_Articles)
+numb_publications[numb_publications$No_Articles == max_numb, ]
+```
+So as it turns out the bird "Alle alle" is mentioned most frequently, in 132832 papers! It's also call "Little Auk", here's how it looks: 
+![Little Auk]<img src="http://www.rspb.org.uk/Images/littleauk_tcm9-18308.jpg?width=530&crop=%2860,252,1260,928%29" />
+
+```{r}
+nrow(numb_publications[numb_publications$No_Articles == 0, ])
 ```
 
-# Aiming higher: combining rMaps and rWBclimate 
-# Leaf in the wind: Grab data from Cystic Fibrosis mutation database 
+And there are still that many birds that we know nothing about (with zero publications on them).
+
+# Aiming higher: trying other packages
+Since we just looked at a bird package, it's fair to look at another, [AntWeb](http://ropensci.org/tutorials/antweb_tutorial.html)
+
+First get the package: 
+```{r}
+#install_github("ropensci/AntWeb")
+library(AntWeb)
+```
+
+And then explore the funtionalities.... by reading the description, it seems like the package is very scientific...meanning that a lot of time you'd have to search by the name of the species, unlike in the case of rbird when we can have many search options. However, there's a option to search by location. 
+```{r}
+
+vancouver_ants <- aw_coords(coord = "49.25,-123.1", r = 2) # in 2 km radius
+class(vancouver_ants)
+vancouver_ants
+```
+Cool! I didn't think you can create your own data type. Unfortunately, there's no record.
+
+
+Let's try searching by a species name. The only ants I know are the leaf-cutting ants, and one of the species is called "Atta cephalotes" (thanks, wikipedia, and I donated)
+```{r}
+# search for availble records on leaf cutters
+leaf_cutter <- aw_data(genus = "atta")
+#792 results available for query. 
+leaf_cutter
+aw_map(leaf_cutter)
+```
+Running the last line of code prompted a browser to open and show a map of where the ants have been found. Such interation with the data, especially when stepping outside of data frame and R studio, is really cool! 
+
+Map picture : 
+![Little Auk]<img src="example_map.PNG" />
+or [view the interactive map](AntWeb species map.html) 
+
+
+
+# Reflection
+I thought the exploration was very interesting. Being able to get data from various sources and generate new knowledge by combining them seem to be my additional step toward becoming a better data scientist. 
+
+I didn't have the  time to explore the web scrapping aspect of the assignment. So that's something I would like to do in the future. Also I came across some visualization packages that involve web technology. I am curious as to how R package can invoke javascript. I'd be interesting to see how packagess like [Togeojson](https://github.com/ropensci/togeojson) work. I was gonna try out [rMaps](https://github.com/ropensci/rMaps) but couldn't understand how to bind additional data to it. When I have time, I want to understand how geojson files work. 
+
+Another thing worth noting is that Rplos requires the API key, so I had to move this Rmarkdown file into the project where Rplos key has been saved in the .Rprofile. After that, within this project, I compile this .Rmd and then move it and its associated files to the course project, and commit it there. I guess in the real situaiton I would just set the .Rprofile in my course project and then before not to add it to github. 
