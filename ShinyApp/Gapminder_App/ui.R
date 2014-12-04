@@ -21,8 +21,11 @@ shinyUI(fluidPage(theme = "bootstrap.css",
          ),
     # the strings in those bracket are acutal name in server.R
     mainPanel(
-			plotOutput("ggplot_gdppc_vs_country"),
-			tableOutput("gapminder_table") # must be the same in server.R
+      tabsetPanel(type = "tabs", 
+        tabPanel("Graph", plotOutput("ggplot_gdppc_vs_country")),
+        tabPanel("Table", tableOutput("gapminder_table")) # must be the same in server.R     
+      )
+
     					
     )
   )
