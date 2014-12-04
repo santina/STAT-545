@@ -21,6 +21,9 @@ This is the repo of Santina.
 * [HW11](https://github.com/STAT545-UBC/zz_sheng-ting_lin-coursework/tree/master/ShinyApp/Gapminder_App)
   * also accessible [here on shinyapp.io](https://santinalin.shinyapps.io/Gapminder_App/)
   * this is based on what I learned from the [shiny app tutorial](http://stat545-ubc.github.io/shiny00_index.html)
+* [HW12](https://github.com/STAT545-UBC/zz_sheng-ting_lin-coursework/blob/master/HW12/hw12_data_from_web.md)
+  * On getting data from the web using different packages developed by others
+  * packages used: Rplos, geonames, Antweb
 
 # A bit about me: 
 
