@@ -151,6 +151,27 @@ ggplot(urbanPopulation_Ratio_GDP, aes(x=Urban_Ratio, y=GDP)) +
 Haha doesn't seem very correlated at all. There are some factors that have an effect on the analysis, such as how we define "urban" in this analysis, the information regarding to urban population (we don't know which year it is from), etc. 
 
 
+# Combine Rplos and rebirds 
+Now I'm interesting in knowing about the number of publications on birds. To do that, the easiest way is to get a list of birds and then use `rplos::plosword`, which allow you to search multiple terms at once and return the number of publications for each, with the options to view that result in a histogram. 
+
+Pacakges involved: [rbirds](https://github.com/ropensci/rebird) and [rplos](https://github.com/ropensci/rplos)
+
+Let's try searching for birds in Canada. 
+```{r}
+library(rplos)
+library(rebird)
+birds_Canada <- ebirdregion(region = 'CA')
+head(birds_Canada)
+length(unique(birds_Canada$sciName))
+```
+There are so many types of birds!  Maybe if I study one bird each day for a year, then I'll get to know all the bird species in Canada. Okay back to the topic: 
+
+Let's search the number of publications
+
+```{r}
+# need PlosApiKey, 
+# out <- plosword(birds_Canada$sciName)
+```
 
 # Aiming higher: combining rMaps and rWBclimate 
 # Leaf in the wind: Grab data from Cystic Fibrosis mutation database 
