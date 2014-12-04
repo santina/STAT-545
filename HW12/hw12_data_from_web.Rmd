@@ -1,0 +1,156 @@
+---
+title: "HW12: Data from the Web"
+author: "Santina Lin"
+date: "Friday, December 05, 2014"
+output:
+  html_document:
+    keep_md: true
+    toc: yes
+    toc_depth: 4 
+---
+
+# Goal
+From our last week of STAT545, we learned about the amazing packages on ROpenSci through [in-class-demo](http://stat545-ubc.github.io/webdata02_activity.html) and how to [get data from the web](http://stat545-ubc.github.io/webdata03_activity.html) by reading the website. 
+
+This is the [assignment](http://stat545-ubc.github.io/hw12_data-from-web). I will focus on : 
+- combining two different datasets together
+- comining different packages to make new things
+- attempt to scrap data 
+
+
+First let's load the housekeeping stuff: 
+```{r, message=FALSE}
+# ==== Packages ====
+library(ggplot2)    # for making plots
+library(ggthemes)   # for customizaing ggplot graphs 
+library(scales)     # for graphs scale
+library(plyr)       # for easy computation with data frames
+library(dplyr)      # do this after loading plyr
+library(knitr)      # for rendering pretty tables
+```
+
+# Combine Gapminder and Geonames
+
+First load the essentials for this section 
+
+```{r, message=FALSE}
+# ==== Geonmaes package ====
+#devtools::install_github("ropensci/geonames") 
+options(geonamesUsername = "santina")
+library(geonames)
+
+# ==== Gapminder data ====
+gdURL <- "http://tiny.cc/gapminder"
+gapminder <- read.delim(file = gdURL) 
+```
+
+Now time to try answeirng Jenny's question: "What is the relationship between per-capita GDP and the proportion of the population which lives in urban centers?"
+To answer this we need to know:
+- the cities in each country, assuming urban population means people living in cities
+- the population in those cities
+- how many people live in the cities centers, in each country
+
+## get a list of countries to investigate
+To see a trend, we need that information for each country. I suspect that gapminder might have less data. Let's check. 
+```{r}
+nlevels(gapminder$country)
+countryInfo <- GNcountryInfo()
+summary(countryInfo)
+```
+Indeed we see that gapminder has less countries. Also all the entry in countryInfo are characters.
+
+Since we need information from both gapminder and the information from `geonames` packages, we'll use the countries with information in both. 
+
+```{r}
+common_countries <- intersect(gapminder$country, countryInfo$countryName)
+length(common_countries)
+```
+There are only `r length(common_countries)` of them! What are they? 
+```{r}
+common_countries
+```
+So these are the countries we'll look at. It might have been due to spelling or spacing that some countries were picked out. 
+
+## Find urban population in these countries 
+
+We'll write a function to find the total urban population in these countries. 
+```{r}
+
+urbanPopulation <- adply(common_countries, .margins = 1, function(country){
+  # filter the countryInfo by the country
+  sub <- countryInfo %>%
+    filter(countryName == country)
+  # use the information of coordinates to get cities in that area
+  cities <- GNcities(north = sub$north, east = sub$east, 
+                     south = sub$south, west = sub$west)
+  # further filter the cities to make sure they belong to the country we're looking at
+  # notice "countrycode" vs "countryCode"
+  cities <- cities %>% filter(countrycode == sub$countryCode) 
+  
+  #sum the population and store the information in a list to be bind into a dataframe
+  totalPopulation <- sum(as.numeric(cities$population))
+  result <- c(country, totalPopulation)
+  
+}) 
+head(urbanPopulation)
+
+```
+Oh guess what, I wrote that `adply()` from scratch in one shot and code compiled on the first try. Yeah look at my R programming muscles I got from lifting homework and peer reviews every week. 
+
+Fixing up the data frame: 
+```{r}
+# take out the first column 
+urbanPopulation <- urbanPopulation[, c(2,3)]
+colnames(urbanPopulation) <- c("Country", "Urban_Population")
+head(urbanPopulation)
+```
+
+##Combine gapminder and the urban data set
+
+Now let's bind more information from gapminder to this data frame. 
+```{r}
+gapminder_sub <- gapminder %>% 
+  subset(country %in% common_countries) %>%
+  subset(year == 2007)
+  
+urbanPopulation <- cbind(urbanPopulation, gapminder_sub$pop, gapminder_sub$gdpPercap)
+
+# fix up the column names 
+colnames(urbanPopulation) <- c("Country", "Urban_Population", "Total_Population", "GDP")
+summary(urbanPopulation)
+```
+The field for urban population is seemed as charcaters so we'll change that. 
+
+```{r}
+urbanPopulation$Urban_Population  <- as.numeric(urbanPopulation$Urban_Population)
+summary(urbanPopulation)
+head(urbanPopulation)
+```
+
+##Calculate the urban ratio and its relationship with GDP
+
+Now we just need an extra column for the urban population raio 
+```{r}
+ratios <- ddply(urbanPopulation, ~Country, function(data){
+  ratio <- (data$Urban_Population)/(data$Total_Population)
+})
+
+head(ratios)
+colnames(ratios) <- c("Country", "Urban_Ratio")
+urbanPopulation_Ratio_GDP <- cbind(urbanPopulation, "Urban_Ratio" = ratios$Urban_Ratio)
+```
+
+Now we can graph to see if there's any relationship
+
+```{r}
+ggplot(urbanPopulation_Ratio_GDP, aes(x=Urban_Ratio, y=GDP)) + 
+  geom_point(size=3) +
+  ggtitle("Urban Population Ratio vs GDP") + 
+  theme_economist()
+```
+Haha doesn't seem very correlated at all. There are some factors that have an effect on the analysis, such as how we define "urban" in this analysis, the information regarding to urban population (we don't know which year it is from), etc. 
+
+
+
+# Aiming higher: combining rMaps and rWBclimate 
+# Leaf in the wind: Grab data from Cystic Fibrosis mutation database 
