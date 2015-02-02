@@ -1,9 +1,5 @@
-zz_sheng-ting_lin-coursework
-============================
 
-coursework created for zz_sheng-ting_lin.
-
-This is the repo of Santina. 
+This is my public homework repository for Stats-545 (Exploratoy data analysis) and Stats-547 (Information Visualization), the two R-oriented stats classes at University of British Columbia. I duplicated the original private course repository so that I can make it public, since the two classes have finished. 
 
 # Important links to .md of 
 * HW1: Edit readme, as a start to R markdown. 
@@ -29,7 +25,6 @@ This is the repo of Santina.
 
 * I'm in bioinformatics. 
 * First year master! 
-* new to github 
 * other interests: skiing, hiking, ~~studying on weekends~~,  especially __origami__ ! 
 
 ##About origami
@@ -40,7 +35,7 @@ I did my undergrad at McGill and was studying Anatomy and Cell Biology. Original
 
 So far I really like the fact that here in UBC I'm getting paid to learn whatever I want. I enjoy dedicating full time in simpy just __learn__. Learning this programming language, trying this code, reading up on things, etc. 
 
-Bioinformatics would allow me to combine the knowledge of biology and comp sci together. I'm super interested in getting to know data analysis and discover things from data. Can't wait to see what I can accomplish in these two years! 
+Bioinformatics would allow me to combine the knowledge of biology and comp sci together. I'm super interested in becoming better at data analysis. Can't wait to see what I can accomplish in these two years! 
 
 ---
 
